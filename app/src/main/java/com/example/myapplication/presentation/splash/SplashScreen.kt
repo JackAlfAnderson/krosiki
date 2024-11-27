@@ -27,6 +27,7 @@ fun SplashScreen(navController: NavController) {
             painter = painterResource(id = R.drawable.icon_round),
             contentDescription = "",
             tint = Color.Unspecified
+
         )
     }
     var timer: CountDownTimer = object : CountDownTimer(3000, 1000) {

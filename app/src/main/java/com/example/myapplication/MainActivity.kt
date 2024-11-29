@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.presentation.pagerScreen.PagerScreen
 import com.example.myapplication.presentation.signIn.SignInScreen
 import com.example.myapplication.presentation.splash.SplashScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -31,6 +32,9 @@ class MainActivity : ComponentActivity() {
                 ){
                     composable(route = "splash"){
                         SplashScreen(navController)
+                    }
+                    composable(route = "pager") {
+                        PagerScreen()
                     }
                     composable(route = "signIn"){
                         SignInScreen()

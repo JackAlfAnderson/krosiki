@@ -13,3 +13,4 @@ val Pink40 = Color(0xFF7D5260)
 
 val LightGrayCustomSuperMega = Color(0xFFF7F7F9)
 val ButtonSuperColor = Color(0xFF48B2E7)
+val accent = Color(0xFF48B2E7)

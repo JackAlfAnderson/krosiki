@@ -1,9 +1,11 @@
-package com.example.myapplication.presentation.signIn
+package com.example.myapplication.presentation.signUp
 
-import android.app.Dialog
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,17 +16,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,27 +37,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
-import com.example.myapplication.presentation.signUp.CustomCheckBox
+import com.example.myapplication.presentation.signIn.CustomTextField
 import com.example.myapplication.ui.theme.ButtonSuperColor
-import com.example.myapplication.ui.theme.LightGrayCustomSuperMega
-import com.example.myapplication.ui.theme.pinini
 
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController) {
 
-
+    var userName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isChecked by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier
@@ -71,13 +68,13 @@ fun SignInScreen(navController: NavController) {
                 null,
                 tint = Color.Unspecified,
                 modifier = Modifier.clickable {
-                    navController.navigate("pager")
+                    navController.navigate("signIn")
                 }
             )
         }
         Spacer(Modifier.height(11.dp))
         Text(
-            "Привет!",
+            "Регистрация",
             fontSize = 32.sp
         )
         Spacer(Modifier.height(8.dp))
@@ -88,6 +85,19 @@ fun SignInScreen(navController: NavController) {
 
             )
         Spacer(modifier = Modifier.height(35.dp))
+
+        CustomTextField(
+            titleText = "Ваше имя",
+            text = userName,
+            onValueChanged = {
+                userName = it
+            },
+            label = "х х х х х х х х",
+            trailingIcon = null,
+            KeyboardType.Email,
+            visualTransformation = false
+        )
+        Spacer(Modifier.height(26.dp))
 
         CustomTextField(
             titleText = "Email",
@@ -113,15 +123,18 @@ fun SignInScreen(navController: NavController) {
             KeyboardType.Password,
             visualTransformation = true
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp))
         Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Восстановить", Modifier.clickable {
-                    navController.navigate("forgot")
-                }
-            )
+            CustomCheckBox(onCheckedChange = {
+                isChecked = it
+            })
+            Spacer(Modifier.width(12.dp))
+            Text("Даю согласие на обработку персональных данных")
+
         }
         Spacer(Modifier.height(24.dp))
         Button(
@@ -151,12 +164,12 @@ fun SignInScreen(navController: NavController) {
 
         ) {
         Row {
-            Text("Вы впервые? ", fontSize = 16.sp)
+            Text("Есть аккаунт? ", fontSize = 16.sp)
             Text(
-                "Создать пользователя",
+                "Войти",
                 fontSize = 16.sp,
                 modifier = Modifier.clickable {
-                    navController.navigate("signUp")
+                    navController.navigate("signIn")
                 }
             )
         }
@@ -164,61 +177,40 @@ fun SignInScreen(navController: NavController) {
 }
 
 @Composable
-fun CustomTextField(
-    titleText: String,
-    text: String,
-    onValueChanged: (String) -> Unit,
-    label: String,
-    trailingIcon: Int?,
-    keyboardType: KeyboardType,
-    visualTransformation: Boolean
-) {
-    var hider by remember {
-        mutableStateOf(visualTransformation)
-    }
-    Text(
-        titleText,
-        modifier = Modifier.fillMaxWidth()
-    )
-    Spacer(Modifier.height(12.dp))
-    TextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = text,
-        onValueChange = {
-            onValueChanged(it)
-        },
-        label = {
-            Text(
-                label, color = Color(0xFF6A6A6A)
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        visualTransformation = if (hider) PasswordVisualTransformation() else VisualTransformation.None,
-        shape = RoundedCornerShape(14.dp),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            unfocusedContainerColor = LightGrayCustomSuperMega,
-        ),
-        trailingIcon = {
-            if (trailingIcon != null) {
-                Icon(
-                    modifier = Modifier.clickable {
-                        hider = !hider
-                    },
-                    painter = painterResource(
-                        id = trailingIcon
-                    ),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
+fun CustomCheckBox(onCheckedChange: (Boolean) -> Unit) {
+
+    var isChecked by remember { mutableStateOf(true) }
+    Card(
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .size(18.dp)
+            .clickable {
+                isChecked = !isChecked
+            },
+        shape = RoundedCornerShape(6.dp)
+    ) {
+        Column(
+            Modifier.fillMaxSize().background(Color(0xFFF7F7F9)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (isChecked) {
+                Icon(painterResource(R.drawable.checkboxicon), null, tint = Color.Unspecified)
+
+                onCheckedChange(isChecked)
             }
         }
-    )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewCustom() {
+    CustomCheckBox(onCheckedChange = {})
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun SignInScreenPreview() {
-    SignInScreen(rememberNavController())
+private fun SignUpScreenPreview() {
+    SignUpScreen(rememberNavController())
 }

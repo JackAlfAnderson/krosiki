@@ -47,6 +47,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.ButtonSuperColor
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +57,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun PagerScreen() {
+fun PagerScreen(navController: NavController) {
 
     val pages = listOf(
         OnBoardingItem(R.drawable.perviykross, "", ""),
@@ -125,13 +127,18 @@ fun PagerScreen() {
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val mpe = if (pagerState.currentPage == 0) "Начать" else "Далее"
+        val buttonText = if (pagerState.currentPage == 0) "Начать" else "Далее"
         val scope = rememberCoroutineScope()
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 scope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    if (pagerState.currentPage != 2){
+                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    } else {
+                        navController.navigate("signIn")
+                    }
+
                 }
             },
             colors = ButtonDefaults.buttonColors(
@@ -140,7 +147,7 @@ fun PagerScreen() {
             ),
             shape = RoundedCornerShape(13.dp)
         ){
-            Text(mpe, color = Color.Black)
+            Text(buttonText, color = Color.Black)
         }
     }
 
@@ -158,16 +165,19 @@ fun OnBoardingScreen(
         Image(
             painter = painterResource(item.image),
             contentDescription = "",
+            modifier = Modifier.fillMaxWidth().height(375.dp)
         )
         Text(
             text = item.title,
             fontSize = 34.sp,
-            color = Color.White
+            color = Color.White,
+            textAlign = TextAlign.Center
         )
         Text(
             text = item.subtitle,
             fontSize = 16.sp,
-            color = Color.White
+            color = Color.White,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -205,16 +215,10 @@ fun OnBoardingFirstScreen(
     }
 }
 
-@Preview
-@Composable
-private fun ONsososs() {
-    PagerScreen()
-}
-
 @Preview(showBackground = true)
 @Composable
 fun OnBoardPreview(){
-    OnBoardingFirstScreen(OnBoardingItem(R.drawable.perviykross, "asdf", "asdf"))
+    PagerScreen(rememberNavController())
 }
 
 data class OnBoardingItem(

@@ -45,10 +45,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.presentation.signIn.CustomTextField
+import com.example.myapplication.presentation.signUp.vM.SignUpViewModel
 import com.example.myapplication.ui.theme.ButtonSuperColor
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel) {
 
     var userName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -201,16 +202,4 @@ fun CustomCheckBox(onCheckedChange: (Boolean) -> Unit) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewCustom() {
-    CustomCheckBox(onCheckedChange = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SignUpScreenPreview() {
-    SignUpScreen(rememberNavController())
 }

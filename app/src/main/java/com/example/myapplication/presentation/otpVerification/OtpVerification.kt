@@ -109,7 +109,7 @@ fun OtpVerificationScreen(navController: NavController) {
         }
         Spacer(Modifier.height(11.dp))
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            Text("OTP проверка", fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            Text("OTP Проверка", fontSize = 32.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(8.dp))
             Text("Пожалуйста, проверьте свою электронную почту, чтобы увидеть код подтверждения", fontSize = 16.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(16.dp))

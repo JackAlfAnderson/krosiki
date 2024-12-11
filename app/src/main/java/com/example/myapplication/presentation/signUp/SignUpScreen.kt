@@ -1,5 +1,6 @@
 package com.example.myapplication.presentation.signUp
 
+import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,10 +24,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -44,8 +48,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.data.connection.connectionCheck
 import com.example.myapplication.presentation.signIn.CustomTextField
 import com.example.myapplication.presentation.signUp.vM.SignUpViewModel
+import com.example.myapplication.presentation.utils.InternetConnectionDialog
 import com.example.myapplication.ui.theme.ButtonSuperColor
 
 @Composable
@@ -54,7 +60,13 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
     var userName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isChecked by remember { mutableStateOf(true) }
+    var isChecked by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    val isShow by signUpViewModel.isShow.collectAsState()
+
+    InternetConnectionDialog(context)
 
     Column(
         modifier = Modifier
@@ -62,6 +74,9 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        if(isShow){
+            CircularProgressIndicator()
+        }
         Spacer(Modifier.height(23.dp))
         Column(Modifier.fillMaxWidth()) {
             Icon(
@@ -142,7 +157,14 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
+            enabled = userName != "" && isChecked &&
+                    Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
+                    password.length > 6 ,
             onClick = {
+                connectionCheck(context)
+
+                signUpViewModel.signUp(name = userName, email = email, password = password)
+
                 navController.navigate("home")
             },
             colors = ButtonDefaults.buttonColors(
@@ -191,7 +213,9 @@ fun CustomCheckBox(onCheckedChange: (Boolean) -> Unit) {
         shape = RoundedCornerShape(6.dp)
     ) {
         Column(
-            Modifier.fillMaxSize().background(Color(0xFFF7F7F9)),
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF7F7F9)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -203,3 +227,4 @@ fun CustomCheckBox(onCheckedChange: (Boolean) -> Unit) {
         }
     }
 }
+

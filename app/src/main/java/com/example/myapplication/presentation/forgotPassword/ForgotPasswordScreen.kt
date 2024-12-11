@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,14 +40,18 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.data.EmailManager
+import com.example.myapplication.presentation.forgotPassword.VM.ForgotPasswordViewModel
 import com.example.myapplication.presentation.signIn.CustomTextField
 import com.example.myapplication.ui.theme.ButtonSuperColor
 import com.example.myapplication.ui.theme.LightGrayCustomSuperMega
 
 @Composable
-fun ForgotPasswordScreen(navController: NavController) {
+fun ForgotPasswordScreen(navController: NavController, forgotPasswordViewModel: ForgotPasswordViewModel) {
 
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
+    val emailManager = EmailManager(context)
     var showDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -96,6 +101,8 @@ fun ForgotPasswordScreen(navController: NavController) {
                 .fillMaxWidth()
                 .height(50.dp),
             onClick = {
+                forgotPasswordViewModel.sendOTP(email = email)
+                emailManager.set(email)
                 showDialog = true
             },
             colors = ButtonDefaults.buttonColors(
@@ -112,9 +119,10 @@ fun ForgotPasswordScreen(navController: NavController) {
         isShow = showDialog,
         onDismissRequest =  {
             showDialog = false
+            navController.navigate("otpVer")
         },
         onNextPage = {
-            navController.navigate("")
+            navController.navigate("otpVer")
         }
     )
 }
@@ -172,10 +180,4 @@ private fun CusEmDial() {
         onNextPage = {},
         isShow = true
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SignInPreview() {
-    ForgotPasswordScreen(rememberNavController())
 }

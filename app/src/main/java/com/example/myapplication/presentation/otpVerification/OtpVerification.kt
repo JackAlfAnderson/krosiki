@@ -1,6 +1,7 @@
 package com.example.myapplication.presentation.otpVerification
 
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -56,15 +57,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.data.EmailManager
+import com.example.myapplication.presentation.otpVerification.vm.OtpVerificationViewModel
 import com.example.myapplication.ui.theme.LightGrayCustomSuperMega
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun OtpVerificationScreen(navController: NavController) {
+fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel: OtpVerificationViewModel) {
 
     val context = LocalContext.current
+
+    val emailManager = EmailManager(context)
 
     var otp1 by remember { mutableStateOf("") }
     var otp2 by remember { mutableStateOf("") }
@@ -184,6 +189,12 @@ fun OtpVerificationScreen(navController: NavController) {
                 text = otp6,
                 onValueChanged = {
                     otp6 = it
+                    if (otp6 != null){
+                        val allOtp = (otp1+otp2+otp3+otp4+otp5+otp6)
+                        otpVerificationViewModel.verifyOtp(email = emailManager.get(), token = allOtp)
+                        Log.d("OTP", allOtp)
+                    }
+
                 },
                 modifier = Modifier
                     .focusRequester(item6)
@@ -281,12 +292,4 @@ fun CustomOtpItem(
             singleLine = true
         )
     }
-}
-
-
-
-@Preview(showBackground = true)
-@Composable
-private fun Some() {
-    OtpVerificationScreen(rememberNavController())
 }

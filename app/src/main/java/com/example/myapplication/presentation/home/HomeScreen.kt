@@ -21,12 +21,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,12 +45,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import io.ktor.util.hex
 
 @Composable
 fun HomeScreen() {
 
     var poisk by remember { mutableStateOf("") }
 
+
+    //Categories
+    val categories = listOf(
+        CategoryItem("Все"),
+        CategoryItem("Outdoor"),
+        CategoryItem("Tennis"),
+        CategoryItem("Running"),
+    )
+
+    //Sneakers
     val sneakers = listOf(
         SneakersItem(
             R.drawable.vtoroykross,
@@ -75,80 +89,139 @@ fun HomeScreen() {
         )
     )
     
-
-    Column(Modifier.fillMaxSize().padding(20.dp).background(Color(0xFFF7F7F9))) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Icon(
-                painter = painterResource(R.drawable.menuicon),
-                null,
-                tint = Color.Unspecified
-            )
-            Text(
-                "Главная",
-                fontSize = 32.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 78.dp)
-
-            )
-            Icon(
-                painter = painterResource(R.drawable.usersbagicon),
-                null,
-                tint = Color.Unspecified
-            )
-        }
-        Spacer(Modifier.height(26.dp))
-        Row {
-            TextField(
-                value = poisk,
-                onValueChange = {
-                    poisk = it
-                },
-                label = {
-                    Text("Поиск")
-                },
-                modifier = Modifier.width(269.dp).height(52.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                trailingIcon = {
+    Column(
+        Modifier.background(Color(0xFFF7F7F9))
+    ) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(20.dp)
+                .background(Color(0xFFF7F7F9))) {
+            Box(
+                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+            ){
+                Box(
+                    Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
+                ){
                     Icon(
-                        painter = painterResource(R.drawable.icon), null, tint = Color.Unspecified
+                        painter = painterResource(R.drawable.menuicon),
+                        null,
+                        tint = Color.Unspecified
                     )
                 }
+                Box(
+
+                ){
+                    Icon(
+                        painter = painterResource(R.drawable.highlighticon),
+                        contentDescription = null,
+                        tint = Color.Unspecified
+                    )
+                    Text(
+                        "Главная",
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(start = 10.dp, top = 4.dp)
+                    )
+                }
+
+                Box(
+                    Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
+                ){
+                    Icon(
+                        painter = painterResource(R.drawable.usersbagicon),
+                        null,
+                        tint = Color.Unspecified
+                    )
+                }
+            }
+            Spacer(Modifier.height(26.dp))
+            Row {
+                TextField(
+                    value = poisk,
+                    onValueChange = {
+                        poisk = it
+                    },
+                    label = {
+                        Text("Поиск")
+                    },
+                    modifier = Modifier
+                        .width(269.dp)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.White,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    trailingIcon = {
+                        Icon(
+                            painter = painterResource(R.drawable.icon), null, tint = Color.Unspecified
+                        )
+                    }
+                )
+                Spacer(Modifier.width(14.dp))
+                Icon(painterResource(R.drawable.settingsicon), null, tint = Color.Unspecified)
+            }
+            Spacer(Modifier.height(22.dp))
+            Text(
+                text = "Категории", fontSize = 16.sp
             )
-            Spacer(Modifier.width(14.dp))
-            Icon(painterResource(R.drawable.settingsicon), null, tint = Color.Unspecified)
-        }
-        Spacer(Modifier.height(22.dp))
-        Text(
-            text = "Категории", fontSize = 16.sp
-        )
-        LazyRow() {
+            Spacer(Modifier.height(19.dp))
+            LazyRow() {
+                items(categories){ item ->
+                    CategoryScreen(item.text)
+                }
+            }
+            Spacer(Modifier.height(25.dp))
+            Box{
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    Text("Все", color = Color(0xFF48B2E7))
+                }
+                Text("Популярное", fontSize = 16.sp)
+            }
+            Spacer(Modifier.height(30.dp))
 
-        }
-
-
-        Spacer(Modifier.height(200.dp))
-        Column(
-
-        ) {
             LazyRow(){
                 items(sneakers){ sneaker ->
                     SneakersScreen(sneaker)
                 }
             }
+
+            Spacer(Modifier.height(29.dp))
+            Box{
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    Text("Все", color = Color(0xFF48B2E7))
+                }
+                Text("Акции", fontSize = 16.sp)
+            }
+            Spacer(Modifier.height(20.dp))
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.akciaimage),
+                    contentDescription = null,
+                    modifier = Modifier.height(95.dp).width(335.dp)
+                )
+            }
+
+
         }
     }
-
 }
 
-@Preview(showBackground = true)
+    @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
     HomeScreen()
@@ -156,19 +229,39 @@ private fun HomeScreenPreview() {
 
 @Composable
 fun SneakersScreen(sneakersItem: SneakersItem) {
-    Column(
-        Modifier.clip(RoundedCornerShape(30.dp))
+
+    var isLiked by remember { mutableStateOf(false) }
+
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        modifier = Modifier.padding(end = 15.dp)
     ) {
         Box(
             modifier = Modifier.padding(9.dp)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.heart),
-                null,
-                modifier = Modifier.clickable {
+            Card(
+                shape = RoundedCornerShape(200.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFF7F7F9)
+                ),
+                modifier = Modifier.size(28.dp),
+            ) {
+                Icon(
+                    painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
+                    null,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                        isLiked = !isLiked
+                    },
+                    tint = Color.Unspecified
+                )
+            }
 
-                }
-            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -197,11 +290,38 @@ fun SneakersScreen(sneakersItem: SneakersItem) {
 
 }
 
+@Composable
+fun CategoryScreen(text: String) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        modifier = Modifier.padding(end = 16.dp)
+    ) {
+        Text(
+            text,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(
+                start = 43.dp,
+                top = 16.dp,
+                end = 43.dp,
+                bottom = 16.dp
+            )
+        )
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
 private fun Sneakers() {
     SneakersScreen(sneakersItem = SneakersItem(R.drawable.vtoroykross, "BEST SELLER", "Nike Air Max", 752.00f))
 }
+
+data class CategoryItem(
+    val text: String
+)
 
 data class SneakersItem(
     val image:Int,

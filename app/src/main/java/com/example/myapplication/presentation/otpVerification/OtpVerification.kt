@@ -58,6 +58,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
+import com.example.myapplication.presentation.newPassword.NewPasswordScreen
+import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewModel
 import com.example.myapplication.presentation.otpVerification.vm.OtpVerificationViewModel
 import com.example.myapplication.ui.theme.LightGrayCustomSuperMega
 import kotlinx.coroutines.delay
@@ -65,12 +67,17 @@ import kotlin.math.sin
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel: OtpVerificationViewModel) {
+fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel: OtpVerificationViewModel, newPasswordViewModel: NewPasswordViewModel) {
 
+
+    //NewPassShow
+    var isNewPasswordShow by remember { mutableStateOf(false) }
+
+    //Email
     val context = LocalContext.current
-
     val emailManager = EmailManager(context)
 
+    //OTP
     var otp1 by remember { mutableStateOf("") }
     var otp2 by remember { mutableStateOf("") }
     var otp3 by remember { mutableStateOf("") }
@@ -78,10 +85,12 @@ fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel
     var otp5 by remember { mutableStateOf("") }
     var otp6 by remember { mutableStateOf("") }
 
+    //OTPFocus
     val (item1 ,item2, item3, item4, item5, item6) = FocusRequester.createRefs()
+
+    //Timer
     var isTextEnabled by remember { mutableStateOf(false) }
     var time by remember { mutableStateOf("") }
-
     var ticks by remember { mutableStateOf(10) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -193,6 +202,7 @@ fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel
                         val allOtp = (otp1+otp2+otp3+otp4+otp5+otp6)
                         otpVerificationViewModel.verifyOtp(email = emailManager.get(), token = allOtp)
                         Log.d("OTP", allOtp)
+                        isNewPasswordShow = true
                     }
 
                 },
@@ -200,8 +210,13 @@ fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel
                     .focusRequester(item6)
                     .focusProperties {
                         previous = item5
-                    }
+                    },
+                moveFocus = false
             )
+            if (isNewPasswordShow){
+                NewPasswordScreen(newPasswordViewModel, navController)
+            }
+
         }
 
         Spacer(Modifier.height(20.dp))
@@ -238,7 +253,8 @@ fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel
 fun CustomOtpItem(
     modifier: Modifier = Modifier,
     text: String,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
+    moveFocus: Boolean = true
 ) {
     val focusManager = LocalFocusManager.current
     var textChange by remember {
@@ -263,7 +279,7 @@ fun CustomOtpItem(
                     )
                 )
                 .onKeyEvent {
-                    if (textChange.isNotEmpty()) {
+                    if (textChange.isNotEmpty() && moveFocus) {
                         focusManager.moveFocus(focusDirection = FocusDirection.Next)
                         true
                     }

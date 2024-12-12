@@ -37,11 +37,12 @@ class BaseAuthManager(
         supabaseClient.auth.verifyEmailOtp(OtpType.Email.EMAIL, email = email, token = token)
     }
 
-    suspend fun newPassword(email: String, password: String){
+    suspend fun newPassword(profile: Profile){
         supabaseClient.auth.updateUser {
-            this.email = email
-            this.password = password
+            email = profile.email
+            password = profile.password
         }
+
     }
 
 }

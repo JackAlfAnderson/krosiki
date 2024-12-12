@@ -13,6 +13,8 @@ import com.example.myapplication.presentation.forgotPassword.ForgotPasswordScree
 import com.example.myapplication.presentation.forgotPassword.VM.ForgotPasswordViewModel
 import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.mapScreen.MapScreen
+import com.example.myapplication.presentation.newPassword.NewPasswordScreen
+import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewModel
 import com.example.myapplication.presentation.otpVerification.OtpVerificationScreen
 import com.example.myapplication.presentation.otpVerification.vm.OtpVerificationViewModel
 import com.example.myapplication.presentation.pagerScreen.PagerScreen
@@ -30,13 +32,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 val navController = rememberNavController()
-                val signUpViewModel = SignUpViewModel(baseAuthManager = App.instance.baseAuthManager)
-                val signInViewModel = SignInViewModel(baseAuthManager = App.instance.baseAuthManager)
-                val forgotPasswordViewModel = ForgotPasswordViewModel(App.instance.baseAuthManager)
-                val otpVerificationViewModel = OtpVerificationViewModel(App.instance.baseAuthManager)
+                val baseAuthManager = App.instance.baseAuthManager
+                val signUpViewModel = SignUpViewModel(baseAuthManager)
+                val signInViewModel = SignInViewModel(baseAuthManager)
+                val forgotPasswordViewModel = ForgotPasswordViewModel(baseAuthManager)
+                val otpVerificationViewModel = OtpVerificationViewModel(baseAuthManager)
+                val newPasswordViewModel = NewPasswordViewModel(baseAuthManager)
                 NavHost(
                     navController = navController,
-                    startDestination = "signUp"
+                    startDestination = "signIn"
                 ){
                     composable(route = "splash"){
                         SplashScreen(navController)
@@ -51,7 +55,7 @@ class MainActivity : ComponentActivity() {
                         SignInScreen(navController, signInViewModel)
                     }
                     composable("otpVer") {
-                        OtpVerificationScreen(navController, otpVerificationViewModel)
+                        OtpVerificationScreen(navController, otpVerificationViewModel, newPasswordViewModel)
                     }
                     composable(route = "signUp") {
                         SignUpScreen(navController, signUpViewModel)

@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,6 +52,7 @@ import io.ktor.util.hex
 fun HomeScreen() {
 
     var poisk by remember { mutableStateOf("") }
+
 
 
     //Categories
@@ -88,134 +90,184 @@ fun HomeScreen() {
             752.00f
         )
     )
-    
-    Column(
-        Modifier.background(Color(0xFFF7F7F9))
-    ) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(20.dp)
-                .background(Color(0xFFF7F7F9))) {
-            Box(
-                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
-            ){
-                Box(
-                    Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
-                ){
-                    Icon(
-                        painter = painterResource(R.drawable.menuicon),
-                        null,
-                        tint = Color.Unspecified
-                    )
-                }
-                Box(
+    Box {
+        Box{
+            Column(
+                Modifier.background(Color(0xFFF7F7F9))
+            ) {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(20.dp)
+                        .background(Color(0xFFF7F7F9))
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.menuicon),
+                                null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier.clickable {
+                                    
+                                }
+                            )
+                        }
+                        Box(
 
-                ){
-                    Icon(
-                        painter = painterResource(R.drawable.highlighticon),
-                        contentDescription = null,
-                        tint = Color.Unspecified
-                    )
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.highlighticon),
+                                contentDescription = null,
+                                tint = Color.Unspecified
+                            )
+                            Text(
+                                "Главная",
+                                fontSize = 32.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(start = 10.dp, top = 4.dp)
+                            )
+                        }
+
+                        Box(
+                            Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.usersbagicon),
+                                null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier.clickable {
+
+                                }
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(26.dp))
+                    Box() {
+                        TextField(
+                            value = poisk,
+                            onValueChange = {
+                                poisk = it
+                            },
+                            singleLine = true,
+                            label = {
+                                Text("Поиск")
+                            },
+                            modifier = Modifier
+                                .width(269.dp)
+                                .height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.White,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedContainerColor = Color.White,
+                                focusedIndicatorColor = Color.Transparent,
+                            ),
+                            trailingIcon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.icon),
+                                    null,
+                                    tint = Color.Unspecified
+                                )
+                            }
+                        )
+                        Box(
+                            contentAlignment = Alignment.CenterEnd,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.settingsicon),
+                                null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier.clickable {
+
+                                }
+                            )
+                        }
+
+
+                    }
+                    Spacer(Modifier.height(22.dp))
                     Text(
-                        "Главная",
-                        fontSize = 32.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(start = 10.dp, top = 4.dp)
+                        text = "Категории", fontSize = 16.sp
                     )
-                }
+                    Spacer(Modifier.height(19.dp))
+                    LazyRow() {
+                        items(categories) { item ->
+                            CategoryScreen(item.text)
+                        }
+                    }
+                    Spacer(Modifier.height(25.dp))
+                    Box {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(end = 10.dp),
+                            contentAlignment = Alignment.CenterEnd,
+                        ) {
+                            Text(
+                                "Все",
+                                color = Color(0xFF48B2E7),
+                                modifier = Modifier.clickable {
 
-                Box(
-                    Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
-                ){
-                    Icon(
-                        painter = painterResource(R.drawable.usersbagicon),
-                        null,
-                        tint = Color.Unspecified
-                    )
-                }
-            }
-            Spacer(Modifier.height(26.dp))
-            Row {
-                TextField(
-                    value = poisk,
-                    onValueChange = {
-                        poisk = it
-                    },
-                    label = {
-                        Text("Поиск")
-                    },
-                    modifier = Modifier
-                        .width(269.dp)
-                        .height(52.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.White,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            painter = painterResource(R.drawable.icon), null, tint = Color.Unspecified
+                                }
+                            )
+                        }
+                        Text("Популярное", fontSize = 16.sp)
+                    }
+                    Spacer(Modifier.height(30.dp))
+
+                    LazyRow() {
+                        items(sneakers) { sneaker ->
+                            SneakersScreen(sneaker)
+                        }
+                    }
+
+                    Spacer(Modifier.height(29.dp))
+                    Box {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(end = 10.dp),
+                            contentAlignment = Alignment.CenterEnd,
+                        ) {
+                            Text(
+                                "Все",
+                                color = Color(0xFF48B2E7),
+                                modifier = Modifier.clickable {
+
+                                }
+                            )
+                        }
+                        Text("Акции", fontSize = 16.sp)
+                    }
+                    Spacer(Modifier.height(20.dp))
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.akciaimage),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .height(95.dp)
+                                .fillMaxWidth()
+                                .clickable {
+
+                                }
                         )
                     }
-                )
-                Spacer(Modifier.width(14.dp))
-                Icon(painterResource(R.drawable.settingsicon), null, tint = Color.Unspecified)
-            }
-            Spacer(Modifier.height(22.dp))
-            Text(
-                text = "Категории", fontSize = 16.sp
-            )
-            Spacer(Modifier.height(19.dp))
-            LazyRow() {
-                items(categories){ item ->
-                    CategoryScreen(item.text)
                 }
             }
-            Spacer(Modifier.height(25.dp))
-            Box{
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(end = 10.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Text("Все", color = Color(0xFF48B2E7))
-                }
-                Text("Популярное", fontSize = 16.sp)
-            }
-            Spacer(Modifier.height(30.dp))
-
-            LazyRow(){
-                items(sneakers){ sneaker ->
-                    SneakersScreen(sneaker)
-                }
-            }
-
-            Spacer(Modifier.height(29.dp))
-            Box{
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(end = 10.dp),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Text("Все", color = Color(0xFF48B2E7))
-                }
-                Text("Акции", fontSize = 16.sp)
-            }
-            Spacer(Modifier.height(20.dp))
-            Column(
-                Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.akciaimage),
-                    contentDescription = null,
-                    modifier = Modifier.height(95.dp).width(335.dp)
-                )
-            }
-
+        }
+        Box(
+            contentAlignment = Alignment.BottomCenter,
+            modifier =
+                Modifier.fillMaxSize()
+        ){
 
         }
     }
@@ -255,8 +307,8 @@ fun SneakersScreen(sneakersItem: SneakersItem) {
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                        isLiked = !isLiked
-                    },
+                            isLiked = !isLiked
+                        },
                     tint = Color.Unspecified
                 )
             }
@@ -297,7 +349,11 @@ fun CategoryScreen(text: String) {
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        modifier = Modifier.padding(end = 16.dp)
+        modifier = Modifier
+            .padding(end = 16.dp)
+            .clickable {
+
+            }
     ) {
         Text(
             text,

@@ -289,7 +289,7 @@ fun SneakersScreen(sneakersItem: SneakersItem) {
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        modifier = Modifier.padding(end = 15.dp)
+        modifier = Modifier.padding(end = 10.dp, bottom = 10.dp, start = 10.dp)
     ) {
         Box(
             modifier = Modifier.padding(9.dp)

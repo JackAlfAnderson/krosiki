@@ -36,6 +36,7 @@ import com.example.myapplication.presentation.checkoutScreen.CheckoutScreen
 import com.example.myapplication.presentation.forgotPassword.ForgotPasswordScreen
 import com.example.myapplication.presentation.forgotPassword.VM.ForgotPasswordViewModel
 import com.example.myapplication.presentation.home.HomeScreen
+import com.example.myapplication.presentation.likedScreen.LikedScreen
 import com.example.myapplication.presentation.mapScreen.MapScreen
 import com.example.myapplication.presentation.newPassword.NewPasswordScreen
 import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewModel
@@ -81,7 +82,7 @@ class MainActivity : ComponentActivity() {
                             SplashScreen(navController)
                         }
                         composable(route = "pager") {
-                            whichScreen = 2
+                            whichScreen = 10
 
                             PagerScreen(navController)
                         }
@@ -89,6 +90,10 @@ class MainActivity : ComponentActivity() {
                             whichScreen = 1
 
                             HomeScreen()
+                        }
+                        composable(route = "liked") {
+                            whichScreen = 2
+                            LikedScreen()
                         }
                         composable(route = "signIn") {
                             whichScreen = 4
@@ -185,7 +190,7 @@ fun BottomBar(whichScreen: Int) {
 }
 
 @Composable
-fun BottomNavigationItemScreen(bottomNavigationItem: BottomNavigationItem) {
+fun BottomNavigationItemScreen(bottomNavigationItem: BottomNavigationItem, ) {
     Icon(
         painter = painterResource(bottomNavigationItem.icon),
         null,

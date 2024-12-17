@@ -2,6 +2,8 @@ package com.example.myapplication.data.app
 
 import android.app.Application
 import com.example.myapplication.data.supabase.BaseAuthManager
+import com.example.myapplication.data.supabase.BasePostgrestManager
+import com.example.myapplication.data.supabase.Product
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -10,11 +12,13 @@ class App(): Application() {
     companion object {
         lateinit var instance : App
             private set
+        var listProducts: List<Product> = listOf()
     }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
+
     }
 
 
@@ -30,5 +34,9 @@ class App(): Application() {
 
     val baseAuthManager by lazy {
         BaseAuthManager(supabaseClient)
+    }
+
+    val basePostgrestManager by lazy {
+        BasePostgrestManager(supabaseClient)
     }
 }

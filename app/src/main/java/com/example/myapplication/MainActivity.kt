@@ -28,14 +28,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.myapplication.data.app.App
+import com.example.myapplication.presentation.categoryScreen.CategoryScreen
 import com.example.myapplication.presentation.checkoutScreen.CheckoutScreen
 import com.example.myapplication.presentation.forgotPassword.ForgotPasswordScreen
 import com.example.myapplication.presentation.forgotPassword.VM.ForgotPasswordViewModel
+import com.example.myapplication.presentation.home.CategoryItem
 import com.example.myapplication.presentation.home.HomeScreen
+import com.example.myapplication.presentation.home.vm.HomeViewModel
 import com.example.myapplication.presentation.likedScreen.LikedScreen
 import com.example.myapplication.presentation.mapScreen.MapScreen
 import com.example.myapplication.presentation.newPassword.NewPasswordScreen
@@ -56,18 +62,35 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
+                val categories = listOf(
+                    CategoryItem("Все",
+                        containerColor = Color.White
+                    ),
+                    CategoryItem("Outdoor",
+                        containerColor = Color.White
+                    ),
+                    CategoryItem("Tennis",
+                        containerColor = Color.White
+                    ),
+                    CategoryItem("Running",
+                        containerColor = Color.White
+                    )
+                )
+
                 val navController = rememberNavController()
                 val baseAuthManager = App.instance.baseAuthManager
+                val basePostgrestManager = App.instance.basePostgrestManager
                 val signUpViewModel = SignUpViewModel(baseAuthManager)
                 val signInViewModel = SignInViewModel(baseAuthManager)
                 val forgotPasswordViewModel = ForgotPasswordViewModel(baseAuthManager)
                 val otpVerificationViewModel = OtpVerificationViewModel(baseAuthManager)
                 val newPasswordViewModel = NewPasswordViewModel(baseAuthManager)
+                val homeViewModel = HomeViewModel(basePostgrestManager)
                 var whichScreen by remember { mutableStateOf(0) }
                 Scaffold(
                     bottomBar = {
-                        if (whichScreen == 1 ){
-                            BottomBar(whichScreen)
+                        if (whichScreen == 1 || whichScreen == 2){
+                            BottomBar(whichScreen, navController)
                         }
 
                     }
@@ -75,7 +98,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(it),
                         navController = navController,
-                        startDestination = "signIn"
+                        startDestination = "home"
                     ) {
                         composable(route = "splash") {
                             whichScreen = 3
@@ -89,11 +112,26 @@ class MainActivity : ComponentActivity() {
                         composable(route = "home") {
                             whichScreen = 1
 
-                            HomeScreen()
+                            HomeScreen(navController, homeViewModel, categories)
                         }
                         composable(route = "liked") {
                             whichScreen = 2
                             LikedScreen()
+                        }
+                        composable(
+                            route = "Category/{category}",
+                            arguments = listOf(
+                                navArgument("category") {
+                                    type = NavType.StringType
+                                }
+                            )
+                        ) { backStackEntry ->
+                            whichScreen = 11
+
+                            CategoryScreen(
+                                categories,
+                                category = backStackEntry.arguments?.getString("category").toString()
+                            )
                         }
                         composable(route = "signIn") {
                             whichScreen = 4
@@ -133,26 +171,38 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun BottomBar(whichScreen: Int) {
+fun BottomBar(whichScreen: Int, navController: NavController) {
     //BottomNavigationIcons
     val bottomNavigationIcons1 = listOf(
         BottomNavigationItem(
             R.drawable.homeicon,
-            tint = if (whichScreen == 1) Color(0xFF48B2E7) else Color.Unspecified
+            tint = if (whichScreen == 1) Color(0xFF48B2E7) else Color.Unspecified,
+            onClick = {
+                navController.navigate("home")
+            }
         ),
         BottomNavigationItem(
             R.drawable.favoriteicon,
-            tint = if (whichScreen == 1) Color.Black else Color.Unspecified
+            tint = if (whichScreen == 2) Color(0xFF48B2E7) else Color.Unspecified,
+            onClick = {
+                navController.navigate("liked")
+            }
         )
     )
     val bottomNavigationIcons2 = listOf(
         BottomNavigationItem(
             R.drawable.notificationicon,
-            tint = if (whichScreen == 1) Color.Black else Color.Unspecified
+            tint = if (whichScreen == 3) Color(0xFF48B2E7) else Color.Unspecified,
+            onClick = {
+
+            }
         ),
         BottomNavigationItem(
             R.drawable.profileicon,
-            tint = if (whichScreen == 1) Color.Black else Color.Unspecified
+            tint = if (whichScreen == 4) Color(0xFF48B2E7) else Color.Unspecified,
+            onClick = {
+
+            }
         )
     )
 
@@ -190,14 +240,14 @@ fun BottomBar(whichScreen: Int) {
 }
 
 @Composable
-fun BottomNavigationItemScreen(bottomNavigationItem: BottomNavigationItem, ) {
+fun BottomNavigationItemScreen(bottomNavigationItem: BottomNavigationItem) {
     Icon(
         painter = painterResource(bottomNavigationItem.icon),
         null,
         modifier = Modifier
             .padding(horizontal = 20.dp)
             .clickable {
-
+                bottomNavigationItem.onClick()
             },
         tint = bottomNavigationItem.tint
     )
@@ -205,5 +255,6 @@ fun BottomNavigationItemScreen(bottomNavigationItem: BottomNavigationItem, ) {
 
 data class BottomNavigationItem(
     val icon: Int,
-    val tint: Color
+    val tint: Color,
+    val onClick: () -> Unit
 )

@@ -3,11 +3,9 @@ package com.example.myapplication.presentation.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,79 +15,51 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.example.myapplication.R
-import io.ktor.util.hex
+import com.example.myapplication.data.app.App
+import com.example.myapplication.data.supabase.Product
+import com.example.myapplication.presentation.home.vm.HomeViewModel
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categories: List<CategoryItem>) {
 
     var poisk by remember { mutableStateOf("") }
 
+    homeViewModel.getList()
 
+    val sneakers by homeViewModel.listOfProducts.collectAsState()
+    val isShow by homeViewModel.isShow.collectAsState()
 
-    //Categories
-    val categories = listOf(
-        CategoryItem("Все"),
-        CategoryItem("Outdoor"),
-        CategoryItem("Tennis"),
-        CategoryItem("Running"),
-    )
+    App.listProducts = sneakers
 
-    //Sneakers
-    val sneakers = listOf(
-        SneakersItem(
-            R.drawable.vtoroykross,
-            "BEST SELLER",
-            "Nike Air Max",
-            752.00f
-        ),
-        SneakersItem(
-            R.drawable.vtoroykross,
-            "BEST SELLER",
-            "Nike Air Max",
-            752.00f
-        ),
-        SneakersItem(
-            R.drawable.vtoroykross,
-            "BEST SELLER",
-            "Nike Air Max",
-            752.00f
-        ),
-        SneakersItem(
-            R.drawable.vtoroykross,
-            "BEST SELLER",
-            "Nike Air Max",
-            752.00f
-        )
-    )
     Box {
         Box{
             Column(
@@ -197,7 +167,12 @@ fun HomeScreen() {
                     Spacer(Modifier.height(19.dp))
                     LazyRow() {
                         items(categories) { item ->
-                            CategoryScreen(item.text)
+                            CategoryRow(
+                                item,
+                                onCategoryClick = {
+                                    navController.navigate("Category/$it")
+                                }
+                            )
                         }
                     }
                     Spacer(Modifier.height(25.dp))
@@ -273,33 +248,29 @@ fun HomeScreen() {
     }
 }
 
-    @Preview(showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
-    HomeScreen()
-}
-
-@Composable
-fun SneakersScreen(sneakersItem: SneakersItem) {
-
+fun SneakersScreen(
+    product: Product
+) {
     var isLiked by remember { mutableStateOf(false) }
 
     Card(
+        modifier = Modifier.width(160.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
-        ),
-        modifier = Modifier.padding(end = 10.dp, bottom = 10.dp, start = 10.dp)
+        ), 
     ) {
-        Box(
-            modifier = Modifier.padding(9.dp)
+        Column(
+
         ) {
             Card(
                 shape = RoundedCornerShape(200.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color(0xFFF7F7F9)
                 ),
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier
+                    .padding(start = 9.dp, top = 9.dp)
             ) {
                 Icon(
                     painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
@@ -312,51 +283,72 @@ fun SneakersScreen(sneakersItem: SneakersItem) {
                     tint = Color.Unspecified
                 )
             }
-
-
             Column(
+                Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(painterResource(sneakersItem.image), null,
-                    Modifier
-                        .height(70.dp)
-                        .width(150.dp))
+                AsyncImage(
+                    modifier = Modifier
+                        .width(118.dp)
+                        .height(70.dp),
+                    model = product.image,
+                    contentDescription = null
+                )
             }
-        }
-        Column(
-            modifier = Modifier.padding(9.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(sneakersItem.title, color = Color(0xFF48B2E7), fontSize = 12.sp)
-            Spacer(Modifier.height(8.dp))
-            Text(sneakersItem.subtitle, color = Color(0xFF6A6A6A), fontSize = 16.sp)
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(start = 9.dp),
+                verticalArrangement = Arrangement.Center
             ) {
-                Text("₽" + sneakersItem.coast.toString() , fontSize = 14.sp)
-                Spacer(Modifier.width(77.dp))
-                Icon(painter = painterResource(R.drawable.plusicon), null, tint = Color.Unspecified)
+                Text(if (product.best_seller == true) "BEST SELLER" else "", color = Color(0xFF48B2E7), fontSize = 12.sp)
+                Spacer(Modifier.height(8.dp))
+                Text(product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("₽" + product.price.toString() , fontSize = 14.sp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Icon(painter = painterResource(R.drawable.plusicon), null, tint = Color.Unspecified)
+                    }
+                }
             }
         }
     }
+}
 
+@Preview
+@Composable
+private fun Some() {
+    SneakersScreen(product = Product(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+    ))
 }
 
 @Composable
-fun CategoryScreen(text: String) {
+fun CategoryRow(categoryItem: CategoryItem, onCategoryClick: (String) -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = categoryItem.containerColor
         ),
         modifier = Modifier
             .padding(end = 16.dp)
             .clickable {
-
+                onCategoryClick(categoryItem.text)
             }
     ) {
         Text(
-            text,
+            categoryItem.text,
             fontSize = 12.sp,
             modifier = Modifier.padding(
                 start = 43.dp,
@@ -368,20 +360,7 @@ fun CategoryScreen(text: String) {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-private fun Sneakers() {
-    SneakersScreen(sneakersItem = SneakersItem(R.drawable.vtoroykross, "BEST SELLER", "Nike Air Max", 752.00f))
-}
-
 data class CategoryItem(
-    val text: String
-)
-
-data class SneakersItem(
-    val image:Int,
-    val title: String,
-    val subtitle:String,
-    val coast: Float
+    val text: String,
+    var containerColor: Color
 )

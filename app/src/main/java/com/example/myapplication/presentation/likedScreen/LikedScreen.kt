@@ -97,7 +97,7 @@ fun LikedScreen(modifier: Modifier = Modifier) {
     }
 
 }
-
+//
 //@Composable
 //fun SneakersGrid(sneakersList: List<SneakersItem>) {
 //    LazyVerticalGrid(

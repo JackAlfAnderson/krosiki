@@ -12,7 +12,7 @@ class App(): Application() {
     companion object {
         lateinit var instance : App
             private set
-        var listProducts: List<Product> = listOf()
+        var listProducts: MutableList<Product> = mutableListOf()
     }
 
     override fun onCreate() {

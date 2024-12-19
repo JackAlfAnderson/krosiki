@@ -58,7 +58,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
     val sneakers by homeViewModel.listOfProducts.collectAsState()
     val isShow by homeViewModel.isShow.collectAsState()
 
-    App.listProducts = sneakers
+    App.listProducts = sneakers.toMutableList()
 
     Box {
         Box{
@@ -253,70 +253,77 @@ fun SneakersScreen(
     product: Product
 ) {
     var isLiked by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = Modifier.width(160.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ), 
+    Column(
+        Modifier.padding(8.dp)
     ) {
-        Column(
-
+        Card(
+            modifier = Modifier
+                .width(160.dp)
+                .height(182.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
         ) {
-            Card(
-                shape = RoundedCornerShape(200.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFF7F7F9)
-                ),
-                modifier = Modifier
-                    .padding(start = 9.dp, top = 9.dp)
-            ) {
-                Icon(
-                    painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
-                    null,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clickable {
-                            isLiked = !isLiked
-                        },
-                    tint = Color.Unspecified
-                )
-            }
             Column(
-                Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+
             ) {
-                AsyncImage(
+                Card(
+                    shape = RoundedCornerShape(200.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFF7F7F9)
+                    ),
                     modifier = Modifier
-                        .width(118.dp)
-                        .height(70.dp),
-                    model = product.image,
-                    contentDescription = null
-                )
-            }
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(start = 9.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(if (product.best_seller == true) "BEST SELLER" else "", color = Color(0xFF48B2E7), fontSize = 12.sp)
-                Spacer(Modifier.height(8.dp))
-                Text(product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(start = 9.dp, top = 9.dp)
                 ) {
-                    Text("₽" + product.price.toString() , fontSize = 14.sp)
+                    Icon(
+                        painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
+                        null,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(16.dp)
+                            .clickable {
+                                isLiked = !isLiked
+                            },
+                        tint = Color.Unspecified
+                    )
+                }
+                Column(
+                    Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AsyncImage(
+                        modifier = Modifier
+                            .width(118.dp)
+                            .height(70.dp),
+                        model = product.image,
+                        contentDescription = null
+                    )
+                }
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(start = 9.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(if (product.best_seller == true) "BEST SELLER" else "", color = Color(0xFF48B2E7), fontSize = 12.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Text(product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(painter = painterResource(R.drawable.plusicon), null, tint = Color.Unspecified)
+                        Text("₽" + product.price.toString() , fontSize = 14.sp)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Icon(painter = painterResource(R.drawable.plusicon), null, tint = Color.Unspecified)
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 @Preview

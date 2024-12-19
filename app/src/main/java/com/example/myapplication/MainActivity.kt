@@ -36,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.data.app.App
 import com.example.myapplication.presentation.categoryScreen.CategoryScreen
+import com.example.myapplication.presentation.categoryScreen.vm.CategoryViewModel
 import com.example.myapplication.presentation.checkoutScreen.CheckoutScreen
 import com.example.myapplication.presentation.forgotPassword.ForgotPasswordScreen
 import com.example.myapplication.presentation.forgotPassword.VM.ForgotPasswordViewModel
@@ -86,6 +87,7 @@ class MainActivity : ComponentActivity() {
                 val otpVerificationViewModel = OtpVerificationViewModel(baseAuthManager)
                 val newPasswordViewModel = NewPasswordViewModel(baseAuthManager)
                 val homeViewModel = HomeViewModel(basePostgrestManager)
+                val categoryViewModel = CategoryViewModel(basePostgrestManager)
                 var whichScreen by remember { mutableStateOf(0) }
                 Scaffold(
                     bottomBar = {
@@ -130,7 +132,8 @@ class MainActivity : ComponentActivity() {
 
                             CategoryScreen(
                                 categories,
-                                category = backStackEntry.arguments?.getString("category").toString()
+                                category = backStackEntry.arguments?.getString("category").toString(),
+                                categoryViewModel = categoryViewModel
                             )
                         }
                         composable(route = "signIn") {

@@ -35,9 +35,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.data.app.App
+import com.example.myapplication.data.supabase.Profile
 import com.example.myapplication.presentation.categoryScreen.CategoryScreen
 import com.example.myapplication.presentation.categoryScreen.vm.CategoryViewModel
 import com.example.myapplication.presentation.checkoutScreen.CheckoutScreen
+import com.example.myapplication.presentation.editProfile.EditProfileScreen
+import com.example.myapplication.presentation.editProfile.vm.EditProfileViewModel
 import com.example.myapplication.presentation.forgotPassword.ForgotPasswordScreen
 import com.example.myapplication.presentation.forgotPassword.VM.ForgotPasswordViewModel
 import com.example.myapplication.presentation.home.CategoryItem
@@ -50,6 +53,10 @@ import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewMode
 import com.example.myapplication.presentation.otpVerification.OtpVerificationScreen
 import com.example.myapplication.presentation.otpVerification.vm.OtpVerificationViewModel
 import com.example.myapplication.presentation.pagerScreen.PagerScreen
+import com.example.myapplication.presentation.profile.ProfileScreen
+import com.example.myapplication.presentation.profile.vm.ProfileViewModel
+import com.example.myapplication.presentation.sideMenu.SideMenuScreen
+import com.example.myapplication.presentation.sideMenu.vm.SideMenuViewModel
 import com.example.myapplication.presentation.signIn.SignInScreen
 import com.example.myapplication.presentation.signIn.vm.SignInViewModel
 import com.example.myapplication.presentation.signUp.SignUpScreen
@@ -88,10 +95,14 @@ class MainActivity : ComponentActivity() {
                 val newPasswordViewModel = NewPasswordViewModel(baseAuthManager)
                 val homeViewModel = HomeViewModel(basePostgrestManager)
                 val categoryViewModel = CategoryViewModel(basePostgrestManager)
+                val sideMenuViewModel = SideMenuViewModel(baseAuthManager)
+                val profileViewModel = ProfileViewModel(baseAuthManager)
+                val editProfileViewModel = EditProfileViewModel(baseAuthManager)
+
                 var whichScreen by remember { mutableStateOf(0) }
                 Scaffold(
                     bottomBar = {
-                        if (whichScreen == 1 || whichScreen == 2){
+                        if (whichScreen == 1 || whichScreen == 2 || whichScreen == 12){
                             BottomBar(whichScreen, navController)
                         }
 
@@ -100,7 +111,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(it),
                         navController = navController,
-                        startDestination = "home"
+                        startDestination = "profile"
                     ) {
                         composable(route = "splash") {
                             whichScreen = 3
@@ -115,6 +126,16 @@ class MainActivity : ComponentActivity() {
                             whichScreen = 1
 
                             HomeScreen(navController, homeViewModel, categories)
+                        }
+                        composable(route = "sideMenu") {
+                            SideMenuScreen()
+                        }
+                        composable(route = "editProfile") {
+                            EditProfileScreen(editProfileViewModel, navController)
+                        }
+                        composable(route = "profile") {
+                            whichScreen = 12
+                            ProfileScreen(profileViewModel, navController)
                         }
                         composable(route = "liked") {
                             whichScreen = 2

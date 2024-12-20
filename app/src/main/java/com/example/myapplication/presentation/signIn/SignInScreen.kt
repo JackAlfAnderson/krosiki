@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.data.EmailManager
 import com.example.myapplication.presentation.signIn.vm.SignInViewModel
 import com.example.myapplication.presentation.utils.InternetConnectionDialog
 import com.example.myapplication.ui.theme.ButtonSuperColor
@@ -139,6 +140,7 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
                 password.length > 6,
             onClick = {
                 signInViewModel.signIn(email = email, password = password)
+                EmailManager(context).set(email)
                 navController.navigate("home")
             },
             colors = ButtonDefaults.buttonColors(

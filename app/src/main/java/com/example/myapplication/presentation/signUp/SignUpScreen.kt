@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.data.EmailManager
 import com.example.myapplication.data.connection.connectionCheck
 import com.example.myapplication.presentation.signIn.CustomTextField
 import com.example.myapplication.presentation.signUp.vM.SignUpViewModel
@@ -164,6 +165,8 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
                 connectionCheck(context)
 
                 signUpViewModel.signUp(name = userName, email = email, password = password)
+                EmailManager(context).set(email)
+
 
                 navController.navigate("home")
             },

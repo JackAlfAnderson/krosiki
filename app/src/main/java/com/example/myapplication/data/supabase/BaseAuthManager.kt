@@ -1,6 +1,7 @@
 package com.example.myapplication.data.supabase
 
 import android.location.Address
+import android.util.Log
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.auth
@@ -8,6 +9,7 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.serialization.Serializable
+import java.util.Locale.filter
 
 class BaseAuthManager(
     private val supabaseClient: SupabaseClient
@@ -42,14 +44,48 @@ class BaseAuthManager(
             email = profile.email
             password = profile.password
         }
+        supabaseClient.postgrest["profiles"].update(
+            {
+                set("password", profile.password)
+            }
+        ){
+            filter {
+                eq("email", profile.email)
+            }
+        }
 
     }
 
+    suspend fun getProfile(email: String): Profile{
+        val userProfile = supabaseClient.postgrest["profiles"].select{
+            filter {
+                eq("email", email)
+            }
+        }.decodeSingle<Profile>()
+        return userProfile
+    }
+
+    suspend fun updateProfile(profile: Profile){
+        supabaseClient.postgrest["profiles"].update(
+            {
+                set("name", profile.name)
+                set("surname", profile.surname)
+                set("address", profile.address)
+                set("phone", profile.phone)
+            }
+
+        ){
+            filter {
+                eq("email", profile.email)
+            }
+        }
+
+    }
 }
 
 @Serializable
 data class Profile(
-    val id: Int? = null,
+    val id: String? = null,
     val name: String = "",
     val surname: String? = null,
     val address: String? = null,

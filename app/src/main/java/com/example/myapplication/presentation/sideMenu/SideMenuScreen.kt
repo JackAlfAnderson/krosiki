@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,15 +31,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
 import com.example.myapplication.data.supabase.BaseAuthManager
 import com.example.myapplication.presentation.sideMenu.vm.SideMenuViewModel
 
 @Composable
-fun SideMenuScreen() {
+fun SideMenuScreen(navController: NavController, sideMenuViewModel: SideMenuViewModel) {
 
+    val email = EmailManager(LocalContext.current).get()
+    LaunchedEffect(Unit) {
+        sideMenuViewModel.getProfile(email)
+    }
+
+
+    val profile by sideMenuViewModel.profile.collectAsState()
+    val isShow by sideMenuViewModel.isShow.collectAsState()
     Box(Modifier.fillMaxSize()) {
+        if (isShow) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(1.dp)
+            )
+        }
         Column(
             Modifier
                 .background(Color(0xFF48B2E7))
@@ -52,44 +69,62 @@ fun SideMenuScreen() {
                 modifier = Modifier.size(96.dp)
             )
             Spacer(Modifier.height(15.dp))
-            Text("Эмануэль Кверти", fontSize = 20.sp, color = Color.White)
+            Text("${profile.name} ${profile.surname}", fontSize = 20.sp, color = Color.White)
             Spacer(Modifier.height(60.dp))
 
             SideMenuItemScreen(
                 SideMenuItem(
                     text = "Профиль",
-                    icon = R.drawable.profileicon
-                )
+                    icon = R.drawable.profileicon,
+                ),
+                onClick = {
+                    navController.navigate("profile")
+                }
             )
             SideMenuItemScreen(
                 SideMenuItem(
                     text = "Корзина",
                     icon = R.drawable.bagicon
-                )
+                ),
+                onClick = {
+
+                }
             )
             SideMenuItemScreen(
                 SideMenuItem(
                     text = "Избранное",
                     icon = R.drawable.heart
-                )
+                ),
+                onClick = {
+                    navController.navigate("liked")
+                }
             )
             SideMenuItemScreen(
                 SideMenuItem(
                     text = "Заказы",
                     icon = R.drawable.kamazicon
-                )
+                ),
+                onClick = {
+
+                }
             )
             SideMenuItemScreen(
                 SideMenuItem(
                     text = "Уведомления",
                     icon = R.drawable.notificationicon
-                )
+                ),
+                onClick = {
+                    navController.navigate("notification")
+                }
             )
             SideMenuItemScreen(
                 SideMenuItem(
                     text = "Настройки",
                     icon = R.drawable.gearicon
-                )
+                ),
+                onClick = {
+
+                }
             )
 
             Box(
@@ -104,7 +139,10 @@ fun SideMenuScreen() {
                 SideMenuItem(
                     text = "Выйти",
                     icon = R.drawable.exiticon
-                )
+                ),
+                onClick = {
+
+                }
             )
 
 
@@ -125,9 +163,11 @@ fun SideMenuScreen() {
 }
 
 @Composable
-fun SideMenuItemScreen(sideMenuItem: SideMenuItem) {
+fun SideMenuItemScreen(sideMenuItem: SideMenuItem, onClick: () -> Unit) {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+            onClick()
+        }
     ) {
         Icon(
             painter = painterResource(sideMenuItem.icon),
@@ -141,11 +181,6 @@ fun SideMenuItemScreen(sideMenuItem: SideMenuItem) {
     Spacer(Modifier.height(30.dp))
 }
 
-@Preview
-@Composable
-private fun sadoa() {
-    SideMenuScreen()
-}
 
 data class SideMenuItem(
     val text: String,

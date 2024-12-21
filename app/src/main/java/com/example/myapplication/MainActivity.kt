@@ -47,12 +47,17 @@ import com.example.myapplication.presentation.home.CategoryItem
 import com.example.myapplication.presentation.home.HomeScreen
 import com.example.myapplication.presentation.home.vm.HomeViewModel
 import com.example.myapplication.presentation.likedScreen.LikedScreen
+import com.example.myapplication.presentation.likedScreen.vm.LikedViewModel
 import com.example.myapplication.presentation.mapScreen.MapScreen
 import com.example.myapplication.presentation.newPassword.NewPasswordScreen
 import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewModel
+import com.example.myapplication.presentation.notificationScreen.NotificationScreen
+import com.example.myapplication.presentation.notificationScreen.vm.NotificationViewModel
 import com.example.myapplication.presentation.otpVerification.OtpVerificationScreen
 import com.example.myapplication.presentation.otpVerification.vm.OtpVerificationViewModel
 import com.example.myapplication.presentation.pagerScreen.PagerScreen
+import com.example.myapplication.presentation.popularScreen.PopularScreen
+import com.example.myapplication.presentation.popularScreen.vm.PopularViewModel
 import com.example.myapplication.presentation.profile.ProfileScreen
 import com.example.myapplication.presentation.profile.vm.ProfileViewModel
 import com.example.myapplication.presentation.sideMenu.SideMenuScreen
@@ -98,13 +103,16 @@ class MainActivity : ComponentActivity() {
                 val sideMenuViewModel = SideMenuViewModel(baseAuthManager)
                 val profileViewModel = ProfileViewModel(baseAuthManager)
                 val editProfileViewModel = EditProfileViewModel(baseAuthManager)
+                val likedViewModel = LikedViewModel(basePostgrestManager)
+                val popularViewModel = PopularViewModel(basePostgrestManager)
+                val notificationViewModel = NotificationViewModel(basePostgrestManager)
 
                 var whichScreen by remember { mutableStateOf(0) }
                 Scaffold(
                     bottomBar = {
-                        if (whichScreen == 1 || whichScreen == 2 || whichScreen == 12){
+                        if (whichScreen == 3 || whichScreen == 7 || whichScreen == 6 || whichScreen == 5 || whichScreen == 15){
                             BottomBar(whichScreen, navController)
-                        }
+                        }//home liked profile editProfile notification
 
                     }
                 ) {
@@ -114,32 +122,34 @@ class MainActivity : ComponentActivity() {
                         startDestination = "profile"
                     ) {
                         composable(route = "splash") {
-                            whichScreen = 3
+                            whichScreen = 1
                             SplashScreen(navController)
                         }
                         composable(route = "pager") {
-                            whichScreen = 10
+                            whichScreen = 2
 
                             PagerScreen(navController)
                         }
                         composable(route = "home") {
-                            whichScreen = 1
+                            whichScreen = 3
 
                             HomeScreen(navController, homeViewModel, categories)
                         }
                         composable(route = "sideMenu") {
-                            SideMenuScreen()
+                            whichScreen = 4
+                            SideMenuScreen(navController, sideMenuViewModel)
                         }
                         composable(route = "editProfile") {
+                            whichScreen = 5
                             EditProfileScreen(editProfileViewModel, navController)
                         }
                         composable(route = "profile") {
-                            whichScreen = 12
+                            whichScreen = 6
                             ProfileScreen(profileViewModel, navController)
                         }
                         composable(route = "liked") {
-                            whichScreen = 2
-                            LikedScreen()
+                            whichScreen = 7
+                            LikedScreen(likedViewModel, navController)
                         }
                         composable(
                             route = "Category/{category}",
@@ -149,21 +159,21 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) { backStackEntry ->
-                            whichScreen = 11
+                            whichScreen = 8
 
                             CategoryScreen(
-                                categories,
                                 category = backStackEntry.arguments?.getString("category").toString(),
-                                categoryViewModel = categoryViewModel
+                                categoryViewModel = categoryViewModel,
+                                navController
                             )
                         }
                         composable(route = "signIn") {
-                            whichScreen = 4
+                            whichScreen = 9
 
                             SignInScreen(navController, signInViewModel)
                         }
                         composable("otpVer") {
-                            whichScreen = 5
+                            whichScreen = 10
                             OtpVerificationScreen(
                                 navController,
                                 otpVerificationViewModel,
@@ -171,22 +181,29 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(route = "signUp") {
-                            whichScreen = 6
+                            whichScreen = 11
                             SignUpScreen(navController, signUpViewModel)
                         }
                         composable("forgot") {
-                            whichScreen = 7
+                            whichScreen = 12
                             ForgotPasswordScreen(navController, forgotPasswordViewModel)
                         }
                         composable(route = "checkout") {
-                            whichScreen = 8
+                            whichScreen = 13
                             CheckoutScreen(navController)
                         }
                         composable(route = "map") {
-                            whichScreen = 9
+                            whichScreen = 14
                             MapScreen()
                         }
-
+                        composable(route = "notification") {
+                            whichScreen = 15
+                            NotificationScreen(notificationViewModel, navController)
+                        }
+                        composable(route = "popular") {
+                            whichScreen = 16
+                            PopularScreen(popularViewModel, navController)
+                        }
                     }
                 }
             }
@@ -196,40 +213,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BottomBar(whichScreen: Int, navController: NavController) {
-    //BottomNavigationIcons
-    val bottomNavigationIcons1 = listOf(
-        BottomNavigationItem(
-            R.drawable.homeicon,
-            tint = if (whichScreen == 1) Color(0xFF48B2E7) else Color.Unspecified,
-            onClick = {
-                navController.navigate("home")
-            }
-        ),
-        BottomNavigationItem(
-            R.drawable.favoriteicon,
-            tint = if (whichScreen == 2) Color(0xFF48B2E7) else Color.Unspecified,
-            onClick = {
-                navController.navigate("liked")
-            }
-        )
-    )
-    val bottomNavigationIcons2 = listOf(
-        BottomNavigationItem(
-            R.drawable.notificationicon,
-            tint = if (whichScreen == 3) Color(0xFF48B2E7) else Color.Unspecified,
-            onClick = {
-
-            }
-        ),
-        BottomNavigationItem(
-            R.drawable.profileicon,
-            tint = if (whichScreen == 4) Color(0xFF48B2E7) else Color.Unspecified,
-            onClick = {
-
-            }
-        )
-    )
-
     Box (
         contentAlignment = Alignment.Center
     ) {
@@ -246,18 +229,52 @@ fun BottomBar(whichScreen: Int, navController: NavController) {
             tint = Color.Unspecified,
             modifier = Modifier.padding(bottom = 20.dp)
         )
-        Row {
-            LazyRow(Modifier.padding(top = 40.dp)) {
-                items(bottomNavigationIcons1) { item ->
-                    BottomNavigationItemScreen(item)
+        Box {
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                Row(Modifier.padding(top = 40.dp)) {
+                    BottomNavigationItemScreen(
+                        BottomNavigationItem(
+                            R.drawable.homeicon,
+                            tint = if (whichScreen == 3) Color(0xFF48B2E7) else Color.Unspecified,
+                            onClick = {
+                                navController.navigate("home")
+                            }
+                        )
+                    )
+                    BottomNavigationItemScreen(
+                        BottomNavigationItem(
+                            R.drawable.favoriteicon,
+                            tint = if (whichScreen == 7) Color(0xFF48B2E7) else Color.Unspecified,
+                            onClick = {
+                                navController.navigate("liked")
+                            }
+                        )
+                    )
                 }
             }
-            Spacer(Modifier.width(130.dp))
-            LazyRow(Modifier.padding(top = 40.dp)) {
-                items(bottomNavigationIcons2) {item ->
-                    BottomNavigationItemScreen(item)
+            Box (Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd){
+                Row(Modifier.padding(top = 40.dp)) {
+                    BottomNavigationItemScreen(
+                        BottomNavigationItem(
+                            R.drawable.notificationicon,
+                            tint = if (whichScreen == 15) Color(0xFF48B2E7) else Color.Unspecified,
+                            onClick = {
+                                navController.navigate("notification")
+                            }
+                        )
+                    )
+                    BottomNavigationItemScreen(
+                        BottomNavigationItem(
+                            R.drawable.profileicon,
+                            tint = if (whichScreen == 6) Color(0xFF48B2E7) else Color.Unspecified,
+                            onClick = {
+                                navController.navigate("profile")
+                            }
+                        )
+                    )
                 }
             }
+
         }
 
     }

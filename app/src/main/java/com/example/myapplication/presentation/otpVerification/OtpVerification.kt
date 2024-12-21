@@ -19,12 +19,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -70,6 +72,9 @@ import kotlin.time.Duration.Companion.seconds
 fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel: OtpVerificationViewModel, newPasswordViewModel: NewPasswordViewModel) {
 
 
+    //Circular indication
+    val isShow by otpVerificationViewModel.isShow.collectAsState()
+
     //NewPassShow
     var isNewPasswordShow by remember { mutableStateOf(false) }
 
@@ -110,6 +115,11 @@ fun OtpVerificationScreen(navController: NavController, otpVerificationViewModel
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
         ){
+        if (isShow) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(1.dp)
+            )
+        }
         Spacer(Modifier.height(23.dp))
         Column(Modifier.fillMaxWidth()) {
             Icon(

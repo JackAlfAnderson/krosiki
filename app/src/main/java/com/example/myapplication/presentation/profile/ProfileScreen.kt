@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -49,6 +50,8 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
 
     val email = EmailManager(LocalContext.current).get()
 
+    val isShow by profileViewModel.isShow.collectAsState()
+
     LaunchedEffect(Unit) {
         profileViewModel.getProfile(email)
     }
@@ -72,6 +75,11 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
         Modifier
             .fillMaxSize()
             .padding(20.dp)) {
+        if (isShow) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(1.dp)
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -85,7 +93,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
                     null,
                     tint = Color.Unspecified,
                     modifier = Modifier.clickable {
-                        navController.navigate("")
+                        navController.navigate("sideMenu")
                     }
                 )
             }
@@ -126,7 +134,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
                 modifier = Modifier.size(96.dp)
             )
             Spacer(Modifier.height(8.dp))
-            Text("Emanuel Chandarman", fontSize = 20.sp)
+            Text("${profile.name} ${profile.surname}", fontSize = 20.sp)
             Spacer(Modifier.height(38.dp))
             Card(
                 shape = RoundedCornerShape(16.dp),

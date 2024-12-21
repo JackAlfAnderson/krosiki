@@ -1,7 +1,5 @@
 package com.example.myapplication.data.supabase
 
-import android.location.Address
-import android.util.Log
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.auth
@@ -9,7 +7,6 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.OTP
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.serialization.Serializable
-import java.util.Locale.filter
 
 class BaseAuthManager(
     private val supabaseClient: SupabaseClient

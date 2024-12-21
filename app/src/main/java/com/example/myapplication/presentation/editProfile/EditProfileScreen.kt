@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,6 +42,8 @@ import com.example.myapplication.presentation.editProfile.vm.EditProfileViewMode
 @Composable
 fun EditProfileScreen(editProfileViewModel: EditProfileViewModel, navController: NavController) {
 
+    val isShow by editProfileViewModel.isShow.collectAsState()
+
     val email = EmailManager(LocalContext.current).get()
 
     LaunchedEffect(Unit) {
@@ -67,6 +70,11 @@ fun EditProfileScreen(editProfileViewModel: EditProfileViewModel, navController:
             .fillMaxSize()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
+        if (isShow) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(1.dp)
+            )
+        }
         Button(
             modifier = Modifier.width(212.dp).height(32.dp),
             onClick = {
@@ -96,7 +104,7 @@ fun EditProfileScreen(editProfileViewModel: EditProfileViewModel, navController:
                 modifier = Modifier.size(96.dp)
             )
             Spacer(Modifier.height(8.dp))
-            Text("Emanuel Chandarman", fontSize = 20.sp)
+            Text("${profile.name} ${profile.surname}", fontSize = 20.sp)
             Spacer(Modifier.height(11.dp))
             Text("Изменить фото профиля", color = Color(0xFF48B2E7))
 

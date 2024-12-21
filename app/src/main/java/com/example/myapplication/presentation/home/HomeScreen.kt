@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -61,6 +62,11 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
     App.listProducts = sneakers.toMutableList()
 
     Box {
+        if (isShow) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(1.dp)
+            )
+        }
         Box{
             Column(
                 Modifier.background(Color(0xFFF7F7F9))
@@ -82,7 +88,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
                                 null,
                                 tint = Color.Unspecified,
                                 modifier = Modifier.clickable {
-                                    
+                                    navController.navigate("sideMenu")
                                 }
                             )
                         }
@@ -187,7 +193,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
                                 "Все",
                                 color = Color(0xFF48B2E7),
                                 modifier = Modifier.clickable {
-
+                                    navController.navigate("popular")
                                 }
                             )
                         }
@@ -252,6 +258,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
 fun SneakersScreen(
     product: Product
 ) {
+
     var isLiked by remember { mutableStateOf(false) }
     Column(
         Modifier.padding(8.dp)

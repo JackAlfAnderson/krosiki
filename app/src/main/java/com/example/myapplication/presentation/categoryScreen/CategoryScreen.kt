@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.data.app.App
 import com.example.myapplication.data.supabase.Product
@@ -45,10 +47,12 @@ import com.example.myapplication.presentation.home.CategoryItem
 import com.example.myapplication.presentation.home.SneakersScreen
 
 @Composable
-fun CategoryScreen(categories: List<CategoryItem>, category: String, categoryViewModel: CategoryViewModel) {
+fun CategoryScreen(category: String, categoryViewModel: CategoryViewModel, navController: NavController) {
 
 
     categoryViewModel.getList()
+
+    val isShow by categoryViewModel.isShow.collectAsState()
 
     var isChoosen by remember { mutableStateOf(false) }
     var isChoosen2 by remember { mutableStateOf(false) }
@@ -77,11 +81,14 @@ fun CategoryScreen(categories: List<CategoryItem>, category: String, categoryVie
     }
 
 
-
-
     Column(
         Modifier.background(Color(0xFFF7F7F9))
     ) {
+        if (isShow) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(1.dp)
+            )
+        }
         Column(
             Modifier
                 .fillMaxSize()
@@ -99,7 +106,7 @@ fun CategoryScreen(categories: List<CategoryItem>, category: String, categoryVie
                         null,
                         tint = Color.Unspecified,
                         modifier = Modifier.clickable {
-
+                            navController.navigate("home")
                         }
                     )
                 }
@@ -266,38 +273,6 @@ fun CategoryScreen(categories: List<CategoryItem>, category: String, categoryVie
     }
 }
 
-
-
-
-@Composable
-fun CategoryButtons(isChoosen: Boolean, text: String) {
-
-    val animateButtonColor by animateColorAsState(
-        if (isChoosen) Color(0xFF48B2E7) else Color.White,
-        tween(1000)
-    )
-    val animateTextColor by animateColorAsState(
-        if (isChoosen) Color.White else Color.Black,
-        tween(1000)
-    )
-
-    Column(Modifier.padding(horizontal = 8.dp)) {
-        Button(
-            onClick = {
-
-            },
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = animateButtonColor
-            ),
-            modifier = Modifier.size(height = 40.dp, width = 108.dp).padding()
-        ) {
-            Text(text, color = animateTextColor)
-        }
-    }
-
-}
-
 fun filterSneakers(sneakers: List<Product>, whatCategory: String) : List<Product>{
 
     var shoes = mutableListOf<Product>()
@@ -309,25 +284,4 @@ fun filterSneakers(sneakers: List<Product>, whatCategory: String) : List<Product
     }
 
     return shoes
-}
-
-@Preview
-@Composable
-private fun Prev() {
-    CategoryScreen(categories = listOf(
-        CategoryItem("Все",
-            containerColor = Color.White
-        ),
-        CategoryItem("Outdoor",
-            containerColor = Color.White
-        ),
-        CategoryItem("Tennis",
-            containerColor = Color.White
-        ),
-
-        CategoryItem("Running",
-            containerColor = Color.White
-        )
-        ), "", categoryViewModel = CategoryViewModel(App.instance.basePostgrestManager)
-    )
 }

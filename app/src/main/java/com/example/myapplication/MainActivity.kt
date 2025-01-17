@@ -39,6 +39,8 @@ import com.example.myapplication.data.supabase.Profile
 import com.example.myapplication.presentation.categoryScreen.CategoryScreen
 import com.example.myapplication.presentation.categoryScreen.vm.CategoryViewModel
 import com.example.myapplication.presentation.checkoutScreen.CheckoutScreen
+import com.example.myapplication.presentation.detailsScreen.DetailsScreen
+import com.example.myapplication.presentation.detailsScreen.vm.DetailsScreenViewModel
 import com.example.myapplication.presentation.editProfile.EditProfileScreen
 import com.example.myapplication.presentation.editProfile.vm.EditProfileViewModel
 import com.example.myapplication.presentation.forgotPassword.ForgotPasswordScreen
@@ -106,6 +108,7 @@ class MainActivity : ComponentActivity() {
                 val likedViewModel = LikedViewModel(basePostgrestManager)
                 val popularViewModel = PopularViewModel(basePostgrestManager)
                 val notificationViewModel = NotificationViewModel(basePostgrestManager)
+                val detailsViewModel = DetailsScreenViewModel(basePostgrestManager)
 
                 var whichScreen by remember { mutableStateOf(0) }
                 Scaffold(
@@ -119,7 +122,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(it),
                         navController = navController,
-                        startDestination = "profile"
+                        startDestination = "details"
                     ) {
                         composable(route = "splash") {
                             whichScreen = 1
@@ -203,6 +206,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = "popular") {
                             whichScreen = 16
                             PopularScreen(popularViewModel, navController)
+                        }
+                        composable(route = "details") {
+                            DetailsScreen(navController, detailsViewModel)
                         }
                     }
                 }

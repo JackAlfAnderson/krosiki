@@ -10,12 +10,13 @@ class BasePostgrestManager(
     private val supabaseClient: SupabaseClient
 ) {
     suspend fun getProducts(): List<Product> {
-        Log.d("produtsasdfkahlkfw", "yesyes")
+        //Log.d("produtsasdfkahlkfw", "yesyes")
         val listOfProducts = supabaseClient.postgrest["products"].select().decodeList<Product>()
-        Log.d("produtsasdfkahlkfw", listOfProducts.toString())
+        //Log.d("produtsasdfkahlkfw", listOfProducts.toString())
         return listOfProducts
     }
 }
+
 @Serializable
 data class Product(
     val id: String?,

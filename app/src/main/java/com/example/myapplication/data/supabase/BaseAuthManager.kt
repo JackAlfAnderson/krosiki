@@ -11,32 +11,32 @@ import kotlinx.serialization.Serializable
 class BaseAuthManager(
     private val supabaseClient: SupabaseClient
 ) {
-    suspend fun signUp(profile: Profile){
-        supabaseClient.auth.signUpWith(Email){
+    suspend fun signUp(profile: Profile) {
+        supabaseClient.auth.signUpWith(Email) {
             email = profile.email
             password = profile.password
         }
         supabaseClient.postgrest["profiles"].insert(profile)
     }
 
-    suspend fun signIn(profile: Profile){
-        supabaseClient.auth.signInWith(Email){
+    suspend fun signIn(profile: Profile) {
+        supabaseClient.auth.signInWith(Email) {
             email = profile.email
             password = profile.password
         }
     }
 
-    suspend fun sendOtp(email: String){
-        supabaseClient.auth.signInWith(OTP){
+    suspend fun sendOtp(email: String) {
+        supabaseClient.auth.signInWith(OTP) {
             this.email = email
         }
     }
 
-    suspend fun verifyOTP(email: String, token: String){
+    suspend fun verifyOTP(email: String, token: String) {
         supabaseClient.auth.verifyEmailOtp(OtpType.Email.EMAIL, email = email, token = token)
     }
 
-    suspend fun newPassword(profile: Profile){
+    suspend fun newPassword(profile: Profile) {
         supabaseClient.auth.updateUser {
             email = profile.email
             password = profile.password
@@ -45,7 +45,7 @@ class BaseAuthManager(
             {
                 set("password", profile.password)
             }
-        ){
+        ) {
             filter {
                 eq("email", profile.email)
             }
@@ -53,8 +53,8 @@ class BaseAuthManager(
 
     }
 
-    suspend fun getProfile(email: String): Profile{
-        val userProfile = supabaseClient.postgrest["profiles"].select{
+    suspend fun getProfile(email: String): Profile {
+        val userProfile = supabaseClient.postgrest["profiles"].select {
             filter {
                 eq("email", email)
             }
@@ -62,7 +62,7 @@ class BaseAuthManager(
         return userProfile
     }
 
-    suspend fun updateProfile(profile: Profile){
+    suspend fun updateProfile(profile: Profile) {
         supabaseClient.postgrest["profiles"].update(
             {
                 set("name", profile.name)
@@ -71,13 +71,15 @@ class BaseAuthManager(
                 set("phone", profile.phone)
             }
 
-        ){
+        ) {
             filter {
                 eq("email", profile.email)
             }
         }
 
     }
+
+
 }
 
 @Serializable
@@ -87,7 +89,7 @@ data class Profile(
     val surname: String? = null,
     val address: String? = null,
     val phone: String? = null,
-    val email:String = "",
+    val email: String = "",
     val created_at: String? = null,
-    val password:String = ""
+    val password: String = ""
 )

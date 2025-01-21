@@ -21,7 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -123,31 +125,18 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
                     }
                     Spacer(Modifier.height(26.dp))
                     Box() {
-                        TextField(
-                            value = poisk,
-                            onValueChange = {
+                        SearchCustom(
+                            search = poisk,
+                            onQueryChange = {
                                 poisk = it
+
                             },
-                            singleLine = true,
-                            label = {
-                                Text("Поиск")
+                            onSearch = {
+
                             },
-                            modifier = Modifier
-                                .width(269.dp)
-                                .height(52.dp),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = Color.White,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                focusedContainerColor = Color.White,
-                                focusedIndicatorColor = Color.Transparent,
-                            ),
-                            trailingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.icon),
-                                    null,
-                                    tint = Color.Unspecified
-                                )
+                            active = false,
+                            isActive = {
+
                             }
                         )
                         Box(
@@ -254,33 +243,28 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
     }
 }
 
-@Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SomethingPreview() {
-    SomethingTest()
-}
-
-@Composable
-fun SomethingTest() {
-    Card(colors = CardDefaults.cardColors(containerColor = Color.White)) {
-        Box {
-            Icon(
-                painter = painterResource(R.drawable.heart),
-                null,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(16.dp),
-                tint = Color.Unspecified
-            )
-            Image(
-                modifier = Modifier
-                    .width(118.dp)
-                    .height(70.dp),
-                painter = painterResource(R.drawable.tretikross),
-                contentDescription = null
-            )
+fun SearchCustom(
+    search: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    active: Boolean,
+    isActive: (Boolean) -> Unit
+) {
+    SearchBar(
+        query = search,
+        onQueryChange = {
+            onQueryChange(it)
+        },
+        onSearch = {
+            onSearch(it)
+        },
+        active = active,
+        onActiveChange = {
+            isActive(it)
         }
-
+    ) {
 
     }
 }

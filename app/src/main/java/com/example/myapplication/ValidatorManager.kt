@@ -18,6 +18,7 @@ class ValidatorManager() {
 
     fun showDialog(message: String){
         isDialogShow = true
+
     }
 
     fun login(email: String, password: String) : Boolean{

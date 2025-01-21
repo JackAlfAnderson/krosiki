@@ -1,22 +1,23 @@
 package com.example.myapplication
 
+import android.util.Patterns
+
 class ValidatorManager() {
 
     var isDialogShow = false
 
     fun emailValid(email:String) : Boolean{
 
-        return false
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     fun passValid(password:String) : Boolean{
 
-        return false
+        return if (password.length > 6) true else false
     }
 
-    fun showDialog(message: String) : Boolean{
+    fun showDialog(message: String){
         isDialogShow = true
-        return false
     }
 
     fun login(email: String, password: String) : Boolean{
@@ -30,7 +31,7 @@ class ValidatorManager() {
             return false
         }
 
-        return false
+        return true
     }
 
 }

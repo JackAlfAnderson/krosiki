@@ -32,7 +32,7 @@ class ValidatorManagerTest() {
     fun validateEmailDialog() {
 
         val validation = validatorManager.login("sdad", "qwerty123")
-        assertFalse(validatorManager.isDialogShow)
+        assertTrue(validatorManager.isDialogShow)
 
     }
 
@@ -40,7 +40,7 @@ class ValidatorManagerTest() {
     fun validatePasswordDialog() {
 
         val validation = validatorManager.login("some@gmail.com", "wrong")
-        assertFalse(validatorManager.isDialogShow)
+        assertTrue(validatorManager.isDialogShow)
     }
 
     @Test

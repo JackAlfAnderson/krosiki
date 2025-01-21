@@ -254,6 +254,37 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
     }
 }
 
+@Preview
+@Composable
+private fun SomethingPreview() {
+    SomethingTest()
+}
+
+@Composable
+fun SomethingTest() {
+    Card(colors = CardDefaults.cardColors(containerColor = Color.White)) {
+        Box {
+            Icon(
+                painter = painterResource(R.drawable.heart),
+                null,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(16.dp),
+                tint = Color.Unspecified
+            )
+            Image(
+                modifier = Modifier
+                    .width(118.dp)
+                    .height(70.dp),
+                painter = painterResource(R.drawable.tretikross),
+                contentDescription = null
+            )
+        }
+
+
+    }
+}
+
 @Composable
 fun SneakersScreen(
     product: Product
@@ -275,45 +306,51 @@ fun SneakersScreen(
             Column(
 
             ) {
-                Card(
-                    shape = RoundedCornerShape(200.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFF7F7F9)
-                    ),
+                Box {
+                    Card(
+                        shape = RoundedCornerShape(200.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFF7F7F9)
+                        ),
+                        modifier = Modifier
+                            .padding(start = 9.dp, top = 9.dp)
+                    ) {
+                        Icon(
+                            painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
+                            null,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(16.dp)
+                                .clickable {
+                                    isLiked = !isLiked
+                                },
+                            tint = Color.Unspecified
+                        )
+                    }
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(Modifier.height(20.dp))
+                        AsyncImage(
+                            modifier = Modifier
+                                .width(118.dp)
+                                .height(70.dp),
+                            model = product.image,
+                            contentDescription = null
+                        )
+                    }
+                }
+
+                Column(
                     modifier = Modifier
-                        .padding(start = 9.dp, top = 9.dp)
-                ) {
-                    Icon(
-                        painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
-                        null,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(16.dp)
-                            .clickable {
-                                isLiked = !isLiked
-                            },
-                        tint = Color.Unspecified
-                    )
-                }
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .width(118.dp)
-                            .height(70.dp),
-                        model = product.image,
-                        contentDescription = null
-                    )
-                }
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(start = 9.dp),
+                        .fillMaxWidth()
+                        .padding(start = 9.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(if (product.best_seller == true) "BEST SELLER" else "", color = Color(0xFF48B2E7), fontSize = 12.sp)
                     Spacer(Modifier.height(8.dp))
-                    Text(product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
+                    Text(if (product.name.toString().length > 16) product.name.toString().take(13) + "..." else product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically

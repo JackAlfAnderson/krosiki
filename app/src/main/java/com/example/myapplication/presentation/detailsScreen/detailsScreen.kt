@@ -59,7 +59,8 @@ fun DetailsScreen(navController: NavController, detailsScreenViewModel: DetailsS
     Column(
         Modifier
             .background(Color(0xffF7F7F9))
-            .padding(20.dp),
+            .padding(20.dp)
+            .fillMaxSize(),
     ) {
         Column(
             Modifier
@@ -103,6 +104,7 @@ fun DetailsScreen(navController: NavController, detailsScreenViewModel: DetailsS
 
             }
         }
+        Spacer(Modifier.height(26.dp))
 
         Column {
             HorizontalPager(

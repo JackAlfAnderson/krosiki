@@ -1,5 +1,6 @@
 package com.example.myapplication.data.supabase
 
+import com.example.myapplication.domain.models.Profile
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.auth
@@ -81,15 +82,3 @@ class BaseAuthManager(
 
 
 }
-
-@Serializable
-data class Profile(
-    val id: String? = null,
-    val name: String = "",
-    val surname: String? = null,
-    val address: String? = null,
-    val phone: String? = null,
-    val email: String = "",
-    val created_at: String? = null,
-    val password: String = ""
-)

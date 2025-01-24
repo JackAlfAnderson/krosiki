@@ -48,8 +48,9 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.myapplication.R
 import com.example.myapplication.data.app.App
-import com.example.myapplication.data.supabase.Product
+import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.home.vm.HomeViewModel
+import com.example.myapplication.ui.theme.newPeninium
 
 @Composable
 fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categories: List<CategoryItem>) {
@@ -339,7 +340,7 @@ fun SneakersScreen(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("₽" + product.price.toString() , fontSize = 14.sp)
+                        Text("₽" + product.price.toString() , fontSize = 14.sp, fontFamily = newPeninium)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.End
@@ -362,7 +363,7 @@ private fun Some() {
         null,
         null,
         null,
-        null,
+        752.00,
         null,
         null,
         null,

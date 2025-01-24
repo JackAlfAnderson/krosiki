@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -49,6 +50,8 @@ import com.example.myapplication.presentation.signIn.vm.SignInViewModel
 import com.example.myapplication.presentation.utils.InternetConnectionDialog
 import com.example.myapplication.ui.theme.ButtonSuperColor
 import com.example.myapplication.ui.theme.LightGrayCustomSuperMega
+import com.example.myapplication.ui.theme.myFontFamily
+import com.example.myapplication.ui.theme.newPeninium
 
 @Composable
 fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel) {
@@ -102,8 +105,9 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
         }
         Spacer(Modifier.height(11.dp))
         Text(
-            "Привет!",
-            fontSize = 32.sp
+            text = stringResource(R.string.hello),
+            fontSize = 32.sp,
+            fontFamily = myFontFamily
         )
         Spacer(Modifier.height(8.dp))
         Text(

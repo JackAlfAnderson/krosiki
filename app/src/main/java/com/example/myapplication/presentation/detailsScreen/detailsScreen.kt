@@ -41,7 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.example.myapplication.R
-import com.example.myapplication.data.supabase.Product
+import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.detailsScreen.vm.DetailsScreenViewModel
 import org.jetbrains.annotations.Async
 

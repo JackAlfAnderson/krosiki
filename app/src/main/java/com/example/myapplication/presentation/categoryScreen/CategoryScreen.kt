@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.data.app.App
-import com.example.myapplication.data.supabase.Product
+import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.categoryScreen.vm.CategoryViewModel
 import com.example.myapplication.presentation.home.CategoryItem
 import com.example.myapplication.presentation.home.SneakersScreen

@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.R
-import com.example.myapplication.data.supabase.Product
+import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.home.SneakersScreen
 import com.example.myapplication.presentation.popularScreen.vm.PopularViewModel
 

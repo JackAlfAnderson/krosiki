@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -38,15 +39,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.ValidatorManager
 import com.example.myapplication.data.EmailManager
 import com.example.myapplication.presentation.signIn.vm.SignInViewModel
 import com.example.myapplication.presentation.utils.InternetConnectionDialog
 import com.example.myapplication.ui.theme.ButtonSuperColor
 import com.example.myapplication.ui.theme.LightGrayCustomSuperMega
+import com.example.myapplication.ui.theme.myFontFamily
+import com.example.myapplication.ui.theme.newPeninium
 
 @Composable
 fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel) {
@@ -54,12 +59,27 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    var validatorManager = ValidatorManager()
 
 
     val isShow by signInViewModel.isShow.collectAsState()
 
+    var isDialogShow by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     InternetConnectionDialog(context)
+    
+    if (isDialogShow){
+        Dialog(
+            onDismissRequest = {
+                isDialogShow = false
+            }
+        ) {
+            Column {
+                Text("Неверный ввод")
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -85,8 +105,9 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
         }
         Spacer(Modifier.height(11.dp))
         Text(
-            "Привет!",
-            fontSize = 32.sp
+            text = stringResource(R.string.hello),
+            fontSize = 32.sp,
+            fontFamily = myFontFamily
         )
         Spacer(Modifier.height(8.dp))
         Text(
@@ -139,6 +160,12 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
             enabled = Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
                 password.length > 6,
             onClick = {
+                if (validatorManager.login(email, password)){
+
+                } else {
+                    isDialogShow = true
+                }
+
                 signInViewModel.signIn(email = email, password = password)
                 EmailManager(context).set(email)
                 navController.navigate("home")
@@ -174,6 +201,8 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
         }
     }
 }
+
+
 
 @Composable
 fun CustomTextField(

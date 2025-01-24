@@ -3,7 +3,7 @@ package com.example.myapplication.data.app
 import android.app.Application
 import com.example.myapplication.data.supabase.BaseAuthManager
 import com.example.myapplication.data.supabase.BasePostgrestManager
-import com.example.myapplication.data.supabase.Product
+import com.example.myapplication.domain.models.Product
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest

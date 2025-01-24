@@ -8,13 +8,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -25,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -35,7 +30,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.data.app.App
-import com.example.myapplication.data.supabase.Profile
 import com.example.myapplication.presentation.categoryScreen.CategoryScreen
 import com.example.myapplication.presentation.categoryScreen.vm.CategoryViewModel
 import com.example.myapplication.presentation.checkoutScreen.CheckoutScreen
@@ -51,7 +45,6 @@ import com.example.myapplication.presentation.home.vm.HomeViewModel
 import com.example.myapplication.presentation.likedScreen.LikedScreen
 import com.example.myapplication.presentation.likedScreen.vm.LikedViewModel
 import com.example.myapplication.presentation.mapScreen.MapScreen
-import com.example.myapplication.presentation.newPassword.NewPasswordScreen
 import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewModel
 import com.example.myapplication.presentation.notificationScreen.NotificationScreen
 import com.example.myapplication.presentation.notificationScreen.vm.NotificationViewModel
@@ -122,7 +115,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(it),
                         navController = navController,
-                        startDestination = "details"
+                        startDestination = "signIn"
                     ) {
                         composable(route = "splash") {
                             whichScreen = 1

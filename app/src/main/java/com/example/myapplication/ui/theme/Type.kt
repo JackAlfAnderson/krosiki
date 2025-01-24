@@ -12,35 +12,38 @@ import com.example.myapplication.R
 val Typography: Typography
     get() = Typography(
         bodyLarge = TextStyle(
-            fontFamily = FontFamily.Default,
+            fontFamily = myFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             lineHeight = 24.sp,
             letterSpacing = 0.5.sp
-        )
-        /* Other default text styles to override
+        ),
         titleLarge = TextStyle(
-            fontFamily = FontFamily.Default,
+            fontFamily = myFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 22.sp,
             lineHeight = 28.sp,
             letterSpacing = 0.sp
         ),
         labelSmall = TextStyle(
-            fontFamily = FontFamily.Default,
+            fontFamily = myFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 11.sp,
             lineHeight = 16.sp,
             letterSpacing = 0.5.sp
         )
-        */
+
     )
 
 val pinini = FontFamily(Font(R.font.newpeninimmt, FontWeight.Normal))
 
-val playFair = FontFamily(
-    Font(R.font.playfair, FontWeight.Normal),
-    Font(R.font.playfair, FontWeight.Bold),
-    Font(R.font.playfair, FontWeight.Black),
-    Font(R.font.playfair, FontWeight.Medium),
+val newPeninium = FontFamily(
+    Font(R.font.newpeninium, FontWeight.Normal),
+    Font(R.font.newpeninium, FontWeight.Bold),
+    Font(R.font.newpeninium, FontWeight.Black),
+    Font(R.font.newpeninium, FontWeight.Medium),
+)
+
+val myFontFamily = FontFamily(
+    Font(R.font.newpeninium)
 )

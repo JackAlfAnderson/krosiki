@@ -21,7 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -46,8 +48,9 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.myapplication.R
 import com.example.myapplication.data.app.App
-import com.example.myapplication.data.supabase.Product
+import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.home.vm.HomeViewModel
+import com.example.myapplication.ui.theme.newPeninium
 
 @Composable
 fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categories: List<CategoryItem>) {
@@ -123,31 +126,18 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
                     }
                     Spacer(Modifier.height(26.dp))
                     Box() {
-                        TextField(
-                            value = poisk,
-                            onValueChange = {
+                        SearchCustom(
+                            search = poisk,
+                            onQueryChange = {
                                 poisk = it
+
                             },
-                            singleLine = true,
-                            label = {
-                                Text("Поиск")
+                            onSearch = {
+
                             },
-                            modifier = Modifier
-                                .width(269.dp)
-                                .height(52.dp),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = Color.White,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                focusedContainerColor = Color.White,
-                                focusedIndicatorColor = Color.Transparent,
-                            ),
-                            trailingIcon = {
-                                Icon(
-                                    painter = painterResource(R.drawable.icon),
-                                    null,
-                                    tint = Color.Unspecified
-                                )
+                            active = false,
+                            isActive = {
+
                             }
                         )
                         Box(
@@ -254,6 +244,32 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchCustom(
+    search: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    active: Boolean,
+    isActive: (Boolean) -> Unit
+) {
+    SearchBar(
+        query = search,
+        onQueryChange = {
+            onQueryChange(it)
+        },
+        onSearch = {
+            onSearch(it)
+        },
+        active = active,
+        onActiveChange = {
+            isActive(it)
+        }
+    ) {
+
+    }
+}
+
 @Composable
 fun SneakersScreen(
     product: Product
@@ -275,50 +291,56 @@ fun SneakersScreen(
             Column(
 
             ) {
-                Card(
-                    shape = RoundedCornerShape(200.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFF7F7F9)
-                    ),
+                Box {
+                    Card(
+                        shape = RoundedCornerShape(200.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFF7F7F9)
+                        ),
+                        modifier = Modifier
+                            .padding(start = 9.dp, top = 9.dp)
+                    ) {
+                        Icon(
+                            painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
+                            null,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(16.dp)
+                                .clickable {
+                                    isLiked = !isLiked
+                                },
+                            tint = Color.Unspecified
+                        )
+                    }
+                    Column(
+                        Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(Modifier.height(20.dp))
+                        AsyncImage(
+                            modifier = Modifier
+                                .width(118.dp)
+                                .height(70.dp),
+                            model = product.image,
+                            contentDescription = null
+                        )
+                    }
+                }
+
+                Column(
                     modifier = Modifier
-                        .padding(start = 9.dp, top = 9.dp)
-                ) {
-                    Icon(
-                        painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
-                        null,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(16.dp)
-                            .clickable {
-                                isLiked = !isLiked
-                            },
-                        tint = Color.Unspecified
-                    )
-                }
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .width(118.dp)
-                            .height(70.dp),
-                        model = product.image,
-                        contentDescription = null
-                    )
-                }
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(start = 9.dp),
+                        .fillMaxWidth()
+                        .padding(start = 9.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(if (product.best_seller == true) "BEST SELLER" else "", color = Color(0xFF48B2E7), fontSize = 12.sp)
                     Spacer(Modifier.height(8.dp))
-                    Text(product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
+                    Text(if (product.name.toString().length > 16) product.name.toString().take(13) + "..." else product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("₽" + product.price.toString() , fontSize = 14.sp)
+                        Text("₽" + product.price.toString() , fontSize = 14.sp, fontFamily = newPeninium)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.End
@@ -341,7 +363,7 @@ private fun Some() {
         null,
         null,
         null,
-        null,
+        752.00,
         null,
         null,
         null,

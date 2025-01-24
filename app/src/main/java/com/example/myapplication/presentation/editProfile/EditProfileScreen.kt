@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
-import com.example.myapplication.data.supabase.Profile
+import com.example.myapplication.domain.models.Profile
 import com.example.myapplication.presentation.editProfile.vm.EditProfileViewModel
 
 @Composable
@@ -78,13 +78,15 @@ fun EditProfileScreen(editProfileViewModel: EditProfileViewModel, navController:
         Button(
             modifier = Modifier.width(212.dp).height(32.dp),
             onClick = {
-                editProfileViewModel.updateProfile(Profile(
+                editProfileViewModel.updateProfile(
+                    Profile(
                     name = userName,
                     surname = userSurname,
                     address = userAddress,
                     phone = userPhone,
                     email = email
-                ))
+                )
+                )
                 navController.navigate("profile")
             },
             colors = ButtonDefaults.buttonColors(

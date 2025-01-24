@@ -1,6 +1,10 @@
 package com.example.myapplication.data.supabase
 
+
 import android.util.Log
+import com.example.myapplication.domain.models.Notification
+import com.example.myapplication.domain.models.Product
+import com.example.myapplication.domain.models.Profile
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.serialization.SerialName
@@ -15,16 +19,26 @@ class BasePostgrestManager(
         //Log.d("produtsasdfkahlkfw", listOfProducts.toString())
         return listOfProducts
     }
-}
 
-@Serializable
-data class Product(
-    val id: String?,
-    val name: String?,
-    val category: String?,
-    val description: String?,
-    val price: Double?,
-    val best_seller: Boolean?,
-    val image: String?,
-    val created_at: String?
-)
+    suspend fun getNotification(userId: String): List<Notification>{
+
+        val listOfNotification = supabaseClient.postgrest["notifications"].select {
+            filter {
+                eq("user_id", userId)
+            }
+        }.decodeList<Notification>()
+
+        return listOfNotification
+    }
+
+    suspend fun getUserId(email:String): String {
+        val profile = supabaseClient.postgrest["profiles"].select {
+            filter {
+                eq("email", email)
+            }
+        }.decodeSingle<Profile>()
+        val userId = profile.id
+
+        return userId.toString()
+    }
+}

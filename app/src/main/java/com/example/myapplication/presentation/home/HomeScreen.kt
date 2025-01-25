@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,9 +24,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,31 +35,34 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
 import com.example.myapplication.R
 import com.example.myapplication.data.app.App
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.home.vm.HomeViewModel
 import com.example.myapplication.ui.theme.newPeninium
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categories: List<CategoryItem>) {
+fun HomeScreen(
+    navController: NavController,
+    homeViewModel: HomeViewModel,
+    categories: List<CategoryItem>
+) {
 
-    var poisk by remember { mutableStateOf("") }
+    var search by remember { mutableStateOf("") }
 
     homeViewModel.getList()
 
     val sneakers by homeViewModel.listOfProducts.collectAsState()
     val isShow by homeViewModel.isShow.collectAsState()
+    var listOfSearch by remember { mutableStateOf(listOf<String>()) }
 
     App.listProducts = sneakers.toMutableList()
 
@@ -70,7 +72,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
                 modifier = Modifier.size(1.dp)
             )
         }
-        Box{
+        Box {
             Column(
                 Modifier.background(Color(0xFFF7F7F9))
             ) {
@@ -126,20 +128,68 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
                     }
                     Spacer(Modifier.height(26.dp))
                     Box() {
-                        SearchCustom(
-                            search = poisk,
-                            onQueryChange = {
-                                poisk = it
+                        Column(
+                            modifier = Modifier.background(Color(0xFFF7F7F9))
+                        ) {
+                            SearchBar(
+                                colors = SearchBarDefaults.colors(
+                                    containerColor = Color.White,
+                                    dividerColor = Color.Transparent
+                                ),
+                                query = search,
+                                onQueryChange = {
+                                    search = it
+                                },
+                                onSearch = {
 
-                            },
-                            onSearch = {
+                                },
+                                active = true,
+                                onActiveChange = {
 
-                            },
-                            active = false,
-                            isActive = {
+                                },
+                                placeholder = {
+                                    Row {
+                                        Icon(
+                                            painter = painterResource(R.drawable.icon),
+                                            null,
+                                            tint = Color.Unspecified
+                                        )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text("Поиск", fontSize = 12.sp)
 
+                                    }
+                                    Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {
+                                        Row() {
+                                            Icon(
+                                                painter = painterResource(R.drawable.rectangle_846),
+                                                null,
+                                                modifier = Modifier
+                                                    .height(24.dp)
+                                                    .width(2.dp)
+                                            )
+                                            Spacer(Modifier.width(12.dp))
+                                            Icon(
+                                                painter = painterResource(R.drawable.vector),
+                                                null
+                                            )
+                                        }
+                                    }
+                                },
+                                shape = RoundedCornerShape(14.dp)
+                            ) {
+                                LazyColumn(
+                                    Modifier.padding(20.dp)
+                                ) {
+                                    items(
+                                        listOfSearch
+                                    ){ item ->
+                                        RecentSearchItem(item)
+                                        Spacer(Modifier.height(16.dp))
+                                    }
+                                }
                             }
-                        )
+                        }
+
                         Box(
                             contentAlignment = Alignment.CenterEnd,
                             modifier = Modifier.fillMaxWidth()
@@ -237,37 +287,92 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel, categ
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier =
-                Modifier.fillMaxSize()
-        ){
+            Modifier.fillMaxSize()
+        ) {
 
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
 @Composable
-fun SearchCustom(
-    search: String,
-    onQueryChange: (String) -> Unit,
-    onSearch: (String) -> Unit,
-    active: Boolean,
-    isActive: (Boolean) -> Unit
-) {
-    SearchBar(
-        query = search,
-        onQueryChange = {
-            onQueryChange(it)
-        },
-        onSearch = {
-            onSearch(it)
-        },
-        active = active,
-        onActiveChange = {
-            isActive(it)
-        }
+fun Something() {
+    var listOfSearch = listOf("Some", "Thing","Some", "Thing")
+    var search = ""
+    Column(
+        modifier = Modifier.background(Color(0xFFF7F7F9))
     ) {
+        SearchBar(
+            colors = SearchBarDefaults.colors(
+                containerColor = Color.White,
+                dividerColor = Color.Transparent
+            ),
+            query = search,
+            onQueryChange = {
+                search = it
+            },
+            onSearch = {
 
+            },
+            active = true,
+            onActiveChange = {
+
+            },
+            placeholder = {
+                Row {
+                    Icon(
+                        painter = painterResource(R.drawable.icon),
+                        null,
+                        tint = Color.Unspecified
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text("Поиск", fontSize = 12.sp)
+
+                }
+                Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {
+                    Row() {
+                        Icon(
+                            painter = painterResource(R.drawable.rectangle_846),
+                            null,
+                            modifier = Modifier
+                                .height(24.dp)
+                                .width(2.dp)
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Icon(
+                            painter = painterResource(R.drawable.vector),
+                            null
+                        )
+                    }
+                }
+            },
+            shape = RoundedCornerShape(14.dp)
+        ) {
+            LazyColumn(
+                Modifier.padding(20.dp)
+            ) {
+                items(
+                    listOfSearch
+                ){ item ->
+                    RecentSearchItem(item)
+                    Spacer(Modifier.height(16.dp))
+                }
+            }
+        }
     }
+
+}
+
+@Composable
+fun RecentSearchItem(text: String) {
+    Row{
+        Icon(painter = painterResource(R.drawable.clockicon), null)
+        Spacer(Modifier.width(12.dp))
+        Text(text, fontSize = 14.sp)
+    }
+
+
 }
 
 @Composable
@@ -301,7 +406,9 @@ fun SneakersScreen(
                             .padding(start = 9.dp, top = 9.dp)
                     ) {
                         Icon(
-                            painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(R.drawable.heart),
+                            painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(
+                                R.drawable.heart
+                            ),
                             null,
                             modifier = Modifier
                                 .padding(8.dp)
@@ -333,19 +440,36 @@ fun SneakersScreen(
                         .padding(start = 9.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(if (product.best_seller == true) "BEST SELLER" else "", color = Color(0xFF48B2E7), fontSize = 12.sp)
+                    Text(
+                        if (product.best_seller == true) "BEST SELLER" else "",
+                        color = Color(0xFF48B2E7),
+                        fontSize = 12.sp
+                    )
                     Spacer(Modifier.height(8.dp))
-                    Text(if (product.name.toString().length > 16) product.name.toString().take(13) + "..." else product.name.toString(), color = Color(0xFF6A6A6A), fontSize = 16.sp)
+                    Text(
+                        if (product.name.toString().length > 16) product.name.toString()
+                            .take(13) + "..." else product.name.toString(),
+                        color = Color(0xFF6A6A6A),
+                        fontSize = 16.sp
+                    )
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("₽" + product.price.toString() , fontSize = 14.sp, fontFamily = newPeninium)
+                        Text(
+                            "₽" + product.price.toString(),
+                            fontSize = 14.sp,
+                            fontFamily = newPeninium
+                        )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.End
                         ) {
-                            Icon(painter = painterResource(R.drawable.plusicon), null, tint = Color.Unspecified)
+                            Icon(
+                                painter = painterResource(R.drawable.plusicon),
+                                null,
+                                tint = Color.Unspecified
+                            )
                         }
                     }
                 }
@@ -358,16 +482,18 @@ fun SneakersScreen(
 @Preview
 @Composable
 private fun Some() {
-    SneakersScreen(product = Product(
-        null,
-        null,
-        null,
-        null,
-        752.00,
-        null,
-        null,
-        null,
-    ))
+    SneakersScreen(
+        product = Product(
+            null,
+            null,
+            null,
+            null,
+            752.00,
+            null,
+            null,
+            null,
+        )
+    )
 }
 
 @Composable

@@ -13,6 +13,7 @@ class App(): Application() {
         lateinit var instance : App
             private set
         var listProducts: MutableList<Product> = mutableListOf()
+        var listOfSearch: MutableList<String> = mutableListOf()
     }
 
     override fun onCreate() {

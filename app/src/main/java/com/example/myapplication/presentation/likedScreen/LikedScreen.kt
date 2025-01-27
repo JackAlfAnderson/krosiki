@@ -122,7 +122,7 @@ fun LikedScreen(likedViewModel: LikedViewModel, navController: NavController) {
                 columns = GridCells.Fixed(2)
             ) {
                 items(shoes){ item ->
-                    SneakersScreen(item)
+                    SneakersScreen(item, navController)
                 }
             }
         }

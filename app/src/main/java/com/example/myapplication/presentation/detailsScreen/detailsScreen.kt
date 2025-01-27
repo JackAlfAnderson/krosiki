@@ -1,6 +1,8 @@
 package com.example.myapplication.presentation.detailsScreen
 
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,13 +19,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,18 +32,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.detailsScreen.vm.DetailsScreenViewModel
-import org.jetbrains.annotations.Async
 
 @Composable
 fun DetailsScreen(navController: NavController, detailsScreenViewModel: DetailsScreenViewModel) {
@@ -110,10 +108,19 @@ fun DetailsScreen(navController: NavController, detailsScreenViewModel: DetailsS
             HorizontalPager(
                 state = pagerState
             ) { current ->
+                val alpha by animateFloatAsState(
+                    if (pagerState.currentPage == current) 1f else 0f,
+                    animationSpec = tween(300)
+                )
                 if (pagerState.layoutInfo.visiblePagesInfo.any { it.index == current}) {
-                    OnSneakersItem(
-                        sneakers[current]
-                    )
+                    Box(
+                        modifier = Modifier.graphicsLayer(alpha = alpha)
+                    ) {
+                        OnSneakersItem(
+                            sneakers[current]
+                        )
+                    }
+
                     currentPage = sneakers[current].name.toString()
                     currentKrosovok = currentPage
                 }
@@ -173,10 +180,7 @@ fun LazySneakersList(product: Product, name: String) {
         modifier = Modifier.size(height = 56.dp, width = 56.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (name == product.name) Color(0xff48B2E7) else Color.White
-        ),
-        onClick = {
-
-        }
+        )
     ) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Card(

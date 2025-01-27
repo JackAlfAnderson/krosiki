@@ -261,7 +261,7 @@ fun CategoryScreen(category: String, categoryViewModel: CategoryViewModel, navCo
                    columns = GridCells.Fixed(2)
                ) {
                    items(shoes){ item ->
-                       SneakersScreen(item)
+                       SneakersScreen(item, navController)
                    }
                }
 

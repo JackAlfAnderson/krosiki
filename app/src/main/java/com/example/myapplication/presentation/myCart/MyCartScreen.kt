@@ -1,4 +1,4 @@
-package com.example.myapplication.presentation.orders
+package com.example.myapplication.presentation.myCart
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,14 +31,13 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 
 @Composable
-fun OrdersScreen() {
-    Column(
-        modifier = Modifier
-            .background(Color(0xFFF7F7F9))
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
-        Column {
+fun MyCart() {
+    Box (){
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+        ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
@@ -56,7 +55,7 @@ fun OrdersScreen() {
                     )
                 }
                 Text(
-                    "Заказы",
+                    "Корзина",
                     fontSize = 16.sp,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -64,34 +63,23 @@ fun OrdersScreen() {
 
 
             }
+            Spacer(Modifier.height(16.dp))
+            Text("3 товара", fontSize = 16.sp)
+            Spacer(Modifier.height(16.dp))
+            SneakerCartItem()
+            Spacer(Modifier.height(14.dp))
+            SneakerCartItem()
+            Spacer(Modifier.height(14.dp))
+            SneakerCartItem()
         }
-        Spacer(Modifier.height(16.dp))
-        Column {
-            Text("Недавний",
-                fontSize = 18.sp,
-                modifier = Modifier.fillMaxWidth())
-        }
-        Spacer(Modifier.height(16.dp))
-        OrderItem()
-        Spacer(Modifier.height(12.dp))
-        OrderItem()
-        Spacer(Modifier.height(24.dp))
-        Column {
-            Text("Вчера",
-                fontSize = 18.sp,
-                modifier = Modifier.fillMaxWidth())
-        }
-        Spacer(Modifier.height(16.dp))
-        OrderItem()
-        Spacer(Modifier.height(12.dp))
-        OrderItem()
-        Spacer(Modifier.height(24.dp))
 
     }
+
+
 }
 
 @Composable
-fun OrderItem() {
+fun SneakerCartItem() {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -131,19 +119,8 @@ fun OrderItem() {
             Column(
 
             ) {
-                Row {
-                    Text("№ 325556516", color = Color(0xff48B2E7))
-                    Text(
-                        "7 мин назад",
-                        color = Color(0xff6A6A6A),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End
-                    )
-                }
-
-                Spacer(Modifier.height(9.dp))
-                Text("Nike Air Max 270 Essential")
-                Spacer(Modifier.height(9.dp))
+                Text("Nike Air Max 270 Essential", fontSize = 16.sp)
+                Spacer(Modifier.height(6.dp))
                 Row {
                     Text("₽814.15")
                     Spacer(Modifier.width(31.dp))
@@ -155,8 +132,8 @@ fun OrderItem() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun OrdersPreview() {
-    OrdersScreen()
+private fun MyCartPreview() {
+    MyCart()
 }

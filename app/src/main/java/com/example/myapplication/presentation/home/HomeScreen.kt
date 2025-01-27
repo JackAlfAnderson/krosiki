@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.app.App
@@ -143,7 +144,7 @@ fun HomeScreen(
                                 onSearch = {
 
                                 },
-                                active = true,
+                                active = false,
                                 onActiveChange = {
 
                                 },
@@ -243,7 +244,7 @@ fun HomeScreen(
 
                     LazyRow() {
                         items(sneakers) { sneaker ->
-                            SneakersScreen(sneaker)
+                            SneakersScreen(sneaker, navController)
                         }
                     }
 
@@ -377,7 +378,8 @@ fun RecentSearchItem(text: String) {
 
 @Composable
 fun SneakersScreen(
-    product: Product
+    product: Product,
+    navController: NavController
 ) {
 
     var isLiked by remember { mutableStateOf(false) }
@@ -391,10 +393,12 @@ fun SneakersScreen(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White
-            ),
+            )
         ) {
             Column(
-
+                modifier = Modifier.clickable {
+                    navController.navigate("details")
+                }
             ) {
                 Box {
                     Card(
@@ -461,38 +465,39 @@ fun SneakersScreen(
                             fontSize = 14.sp,
                             fontFamily = newPeninium
                         )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.plusicon),
-                                null,
-                                tint = Color.Unspecified
-                            )
-                        }
                     }
                 }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.plusicon),
+                    null,
+                    tint = Color.Unspecified
+                )
             }
         }
     }
 
 }
 
-@Preview
+@Preview()
 @Composable
-private fun Some() {
+private fun Someff() {
     SneakersScreen(
-        product = Product(
+        Product(
             null,
             null,
             null,
             null,
-            752.00,
             null,
             null,
             null,
-        )
+            null
+            ),
+        rememberNavController()
     )
 }
 

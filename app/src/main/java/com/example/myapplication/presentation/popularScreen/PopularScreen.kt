@@ -124,7 +124,7 @@ fun PopularScreen(popularViewModel: PopularViewModel, navController: NavControll
                 columns = GridCells.Fixed(2)
             ) {
                 items(shoes){ item ->
-                    SneakersScreen(item)
+                    SneakersScreen(item,navController)
                 }
             }
         }

@@ -29,18 +29,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.R
+import com.example.myapplication.data.EmailManager
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.home.SneakersScreen
 import com.example.myapplication.presentation.likedScreen.vm.LikedViewModel
+import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 
 @Composable
-fun LikedScreen(likedViewModel: LikedViewModel, navController: NavController) {
+fun LikedScreen(likedViewModel: LikedViewModel, navController: NavController, myCartViewModel: MyCartViewModel) {
+
+    val email = EmailManager(LocalContext.current).get()
+    myCartViewModel.userId(email)
+    val userId by myCartViewModel.userId.collectAsState()
 
     likedViewModel.getList()
 
@@ -122,7 +129,7 @@ fun LikedScreen(likedViewModel: LikedViewModel, navController: NavController) {
                 columns = GridCells.Fixed(2)
             ) {
                 items(shoes){ item ->
-                    SneakersScreen(item, navController)
+                    SneakersScreen(item, navController, myCartViewModel, userId)
                 }
             }
         }

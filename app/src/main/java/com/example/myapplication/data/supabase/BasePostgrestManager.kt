@@ -2,6 +2,8 @@ package com.example.myapplication.data.supabase
 
 
 import android.util.Log
+import com.example.myapplication.domain.models.Cart
+import com.example.myapplication.domain.models.Favorite
 import com.example.myapplication.domain.models.Notification
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.domain.models.Profile
@@ -14,10 +16,31 @@ class BasePostgrestManager(
     private val supabaseClient: SupabaseClient
 ) {
     suspend fun getProducts(): List<Product> {
-        //Log.d("produtsasdfkahlkfw", "yesyes")
+
         val listOfProducts = supabaseClient.postgrest["products"].select().decodeList<Product>()
-        //Log.d("produtsasdfkahlkfw", listOfProducts.toString())
+
         return listOfProducts
+    }
+
+    suspend fun getCartItems(userId: String): List<Product> {
+
+        val listOfCart= supabaseClient.postgrest["cart"].select{
+            filter {
+                eq("user_id", userId)
+            }
+        }.decodeList<Cart>()
+
+        val listOfCartItems = mutableListOf<Product>()
+
+        listOfCart.forEach {
+            listOfCartItems.add(supabaseClient.postgrest["products"].select{
+                filter {
+                    eq("product_id", it.product_id!!)
+                }
+            }.decodeSingle())
+        }
+
+        return listOfCartItems
     }
 
     suspend fun getNotification(userId: String): List<Notification>{
@@ -40,5 +63,9 @@ class BasePostgrestManager(
         val userId = profile.id
 
         return userId.toString()
+    }
+
+    suspend fun addCartItem(cart: Cart){
+        supabaseClient.postgrest["cart"].insert(cart)
     }
 }

@@ -1,5 +1,7 @@
 package com.example.myapplication.presentation.home
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,9 +47,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.example.myapplication.R
+import com.example.myapplication.data.EmailManager
 import com.example.myapplication.data.app.App
+import com.example.myapplication.domain.models.Cart
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.home.vm.HomeViewModel
+import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 import com.example.myapplication.ui.theme.newPeninium
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,16 +60,20 @@ import com.example.myapplication.ui.theme.newPeninium
 fun HomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel,
-    categories: List<CategoryItem>
+    categories: List<CategoryItem>,
+    myCartViewModel: MyCartViewModel
 ) {
 
     var search by remember { mutableStateOf("") }
 
     homeViewModel.getList()
+    val email = EmailManager(LocalContext.current).get()
+    myCartViewModel.userId(email)
 
     val sneakers by homeViewModel.listOfProducts.collectAsState()
     val isShow by homeViewModel.isShow.collectAsState()
     var listOfSearch by remember { mutableStateOf(listOf<String>()) }
+    val userId by myCartViewModel.userId.collectAsState()
 
     App.listProducts = sneakers.toMutableList()
 
@@ -159,7 +169,10 @@ fun HomeScreen(
                                         Text("Поиск", fontSize = 12.sp)
 
                                     }
-                                    Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {
+                                    Box(
+                                        contentAlignment = Alignment.CenterEnd,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
                                         Row() {
                                             Icon(
                                                 painter = painterResource(R.drawable.rectangle_846),
@@ -183,7 +196,7 @@ fun HomeScreen(
                                 ) {
                                     items(
                                         listOfSearch
-                                    ){ item ->
+                                    ) { item ->
                                         RecentSearchItem(item)
                                         Spacer(Modifier.height(16.dp))
                                     }
@@ -244,7 +257,7 @@ fun HomeScreen(
 
                     LazyRow() {
                         items(sneakers) { sneaker ->
-                            SneakersScreen(sneaker, navController)
+                            SneakersScreen(sneaker, navController, myCartViewModel, userId = userId)
                         }
                     }
 
@@ -299,7 +312,7 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun Something() {
-    var listOfSearch = listOf("Some", "Thing","Some", "Thing")
+    var listOfSearch = listOf("Some", "Thing", "Some", "Thing")
     var search = ""
     Column(
         modifier = Modifier.background(Color(0xFFF7F7F9))
@@ -316,7 +329,7 @@ fun Something() {
             onSearch = {
 
             },
-            active = true,
+            active = false,
             onActiveChange = {
 
             },
@@ -355,7 +368,7 @@ fun Something() {
             ) {
                 items(
                     listOfSearch
-                ){ item ->
+                ) { item ->
                     RecentSearchItem(item)
                     Spacer(Modifier.height(16.dp))
                 }
@@ -367,7 +380,7 @@ fun Something() {
 
 @Composable
 fun RecentSearchItem(text: String) {
-    Row{
+    Row {
         Icon(painter = painterResource(R.drawable.clockicon), null)
         Spacer(Modifier.width(12.dp))
         Text(text, fontSize = 14.sp)
@@ -379,127 +392,109 @@ fun RecentSearchItem(text: String) {
 @Composable
 fun SneakersScreen(
     product: Product,
-    navController: NavController
+    navController: NavController,
+    myCartViewModel: MyCartViewModel,
+    userId: String
 ) {
 
-    var isLiked by remember { mutableStateOf(false) }
-    Column(
-        Modifier.padding(8.dp)
-    ) {
-        Card(
-            modifier = Modifier
-                .width(160.dp)
-                .height(182.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            )
-        ) {
-            Column(
-                modifier = Modifier.clickable {
-                    navController.navigate("details")
-                }
-            ) {
-                Box {
-                    Card(
-                        shape = RoundedCornerShape(200.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFF7F7F9)
-                        ),
-                        modifier = Modifier
-                            .padding(start = 9.dp, top = 9.dp)
-                    ) {
-                        Icon(
-                            painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(
-                                R.drawable.heart
-                            ),
-                            null,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .size(16.dp)
-                                .clickable {
-                                    isLiked = !isLiked
-                                },
-                            tint = Color.Unspecified
-                        )
-                    }
-                    Column(
-                        Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(Modifier.height(20.dp))
-                        AsyncImage(
-                            modifier = Modifier
-                                .width(118.dp)
-                                .height(70.dp),
-                            model = product.image,
-                            contentDescription = null
-                        )
-                    }
-                }
 
-                Column(
+    var isLiked by remember { mutableStateOf(false) }
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        modifier = Modifier
+            .size(width = 160.dp, height = 182.dp)
+            .padding(horizontal = 10.dp),
+        shape = RoundedCornerShape(16.dp),
+
+        ) {
+        Box() {
+            Card(
+                shape = RoundedCornerShape(200.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFFF7F7F9)
+                ),
+                modifier = Modifier
+                    .padding(start = 9.dp, top = 9.dp)
+            ) {
+                Icon(
+                    painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(
+                        R.drawable.heart
+                    ),
+                    null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 9.dp),
-                    verticalArrangement = Arrangement.Center
+                        .padding(8.dp)
+                        .size(16.dp)
+                        .clickable {
+                            isLiked = !isLiked
+                        },
+                    tint = Color.Unspecified
+                )
+            }
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 18.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = product.image,
+                    null,
+                    modifier = Modifier
+                        .width(118.dp)
+                        .height(70.dp)
+                )
+            }
+            Column(
+                modifier = Modifier.padding(top = 100.dp, start = 9.dp)
+            ) {
+                Text(
+                    if (product.best_seller == true) "BEST SELLER" else "",
+                    color = Color(0xFF48B2E7),
+                    fontSize = 12.sp
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    if (product.name.toString().length > 16) product.name.toString()
+                        .take(13) + "..." else product.name.toString(),
+                    color = Color(0xFF6A6A6A),
+                    fontSize = 16.sp
+                )
+                Spacer(Modifier.height(14.dp))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        if (product.best_seller == true) "BEST SELLER" else "",
-                        color = Color(0xFF48B2E7),
-                        fontSize = 12.sp
+                        "₽" + product.price.toString(),
+                        fontSize = 14.sp,
+                        fontFamily = newPeninium
                     )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        if (product.name.toString().length > 16) product.name.toString()
-                            .take(13) + "..." else product.name.toString(),
-                        color = Color(0xFF6A6A6A),
-                        fontSize = 16.sp
-                    )
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            "₽" + product.price.toString(),
-                            fontSize = 14.sp,
-                            fontFamily = newPeninium
-                        )
-                    }
                 }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
                 Icon(
                     painter = painterResource(R.drawable.plusicon),
                     null,
-                    tint = Color.Unspecified
+                    tint = Color.Unspecified,
+                    modifier = Modifier.clickable {
+                        Log.d("clicked", "кликнулось")
+                        myCartViewModel.addCartItem(
+                            userId = userId,
+                            productId = product.id!!,
+                            quantity = 1
+                        )
+                    }
                 )
             }
         }
     }
 
+
 }
 
-@Preview()
-@Composable
-private fun Someff() {
-    SneakersScreen(
-        Product(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-            ),
-        rememberNavController()
-    )
-}
+
 
 @Composable
 fun CategoryRow(categoryItem: CategoryItem, onCategoryClick: (String) -> Unit) {

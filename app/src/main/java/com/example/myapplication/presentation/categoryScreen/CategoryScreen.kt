@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,15 +41,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.R
+import com.example.myapplication.data.EmailManager
 import com.example.myapplication.data.app.App
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.categoryScreen.vm.CategoryViewModel
 import com.example.myapplication.presentation.home.CategoryItem
 import com.example.myapplication.presentation.home.SneakersScreen
+import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 
 @Composable
-fun CategoryScreen(category: String, categoryViewModel: CategoryViewModel, navController: NavController) {
+fun CategoryScreen(
+    category: String,
+    categoryViewModel: CategoryViewModel,
+    navController: NavController,
+    myCartViewModel: MyCartViewModel
+) {
 
+    val email = EmailManager(LocalContext.current).get()
+    myCartViewModel.userId(email)
+    val userId by myCartViewModel.userId.collectAsState()
 
     categoryViewModel.getList()
 
@@ -261,7 +272,7 @@ fun CategoryScreen(category: String, categoryViewModel: CategoryViewModel, navCo
                    columns = GridCells.Fixed(2)
                ) {
                    items(shoes){ item ->
-                       SneakersScreen(item, navController)
+                       SneakersScreen(item, navController, myCartViewModel, userId)
                    }
                }
 

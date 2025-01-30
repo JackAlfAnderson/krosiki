@@ -45,6 +45,8 @@ import com.example.myapplication.presentation.home.vm.HomeViewModel
 import com.example.myapplication.presentation.likedScreen.LikedScreen
 import com.example.myapplication.presentation.likedScreen.vm.LikedViewModel
 import com.example.myapplication.presentation.mapScreen.MapScreen
+import com.example.myapplication.presentation.myCart.MyCart
+import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewModel
 import com.example.myapplication.presentation.notificationScreen.NotificationScreen
 import com.example.myapplication.presentation.notificationScreen.vm.NotificationViewModel
@@ -65,6 +67,26 @@ import com.example.myapplication.presentation.splash.SplashScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
+
+    val baseAuthManager = App.instance.baseAuthManager
+    val basePostgrestManager = App.instance.basePostgrestManager
+    val signUpViewModel = SignUpViewModel(baseAuthManager)
+    val signInViewModel = SignInViewModel(baseAuthManager)
+    val forgotPasswordViewModel = ForgotPasswordViewModel(baseAuthManager)
+    val otpVerificationViewModel = OtpVerificationViewModel(baseAuthManager)
+    val newPasswordViewModel = NewPasswordViewModel(baseAuthManager)
+    val homeViewModel = HomeViewModel(basePostgrestManager)
+    val categoryViewModel = CategoryViewModel(basePostgrestManager)
+    val sideMenuViewModel = SideMenuViewModel(baseAuthManager)
+    val profileViewModel = ProfileViewModel(baseAuthManager)
+    val editProfileViewModel = EditProfileViewModel(baseAuthManager)
+    val likedViewModel = LikedViewModel(basePostgrestManager)
+    val popularViewModel = PopularViewModel(basePostgrestManager)
+    val notificationViewModel = NotificationViewModel(basePostgrestManager)
+    val detailsViewModel = DetailsScreenViewModel(basePostgrestManager)
+    val myCartViewModel = MyCartViewModel(basePostgrestManager)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -86,22 +108,6 @@ class MainActivity : ComponentActivity() {
                 )
 
                 val navController = rememberNavController()
-                val baseAuthManager = App.instance.baseAuthManager
-                val basePostgrestManager = App.instance.basePostgrestManager
-                val signUpViewModel = SignUpViewModel(baseAuthManager)
-                val signInViewModel = SignInViewModel(baseAuthManager)
-                val forgotPasswordViewModel = ForgotPasswordViewModel(baseAuthManager)
-                val otpVerificationViewModel = OtpVerificationViewModel(baseAuthManager)
-                val newPasswordViewModel = NewPasswordViewModel(baseAuthManager)
-                val homeViewModel = HomeViewModel(basePostgrestManager)
-                val categoryViewModel = CategoryViewModel(basePostgrestManager)
-                val sideMenuViewModel = SideMenuViewModel(baseAuthManager)
-                val profileViewModel = ProfileViewModel(baseAuthManager)
-                val editProfileViewModel = EditProfileViewModel(baseAuthManager)
-                val likedViewModel = LikedViewModel(basePostgrestManager)
-                val popularViewModel = PopularViewModel(basePostgrestManager)
-                val notificationViewModel = NotificationViewModel(basePostgrestManager)
-                val detailsViewModel = DetailsScreenViewModel(basePostgrestManager)
 
                 var whichScreen by remember { mutableStateOf(0) }
                 Scaffold(
@@ -115,7 +121,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(it),
                         navController = navController,
-                        startDestination = "signIn"
+                        startDestination = "cart"
                     ) {
                         composable(route = "splash") {
                             whichScreen = 1
@@ -129,7 +135,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "home") {
                             whichScreen = 3
 
-                            HomeScreen(navController, homeViewModel, categories)
+                            HomeScreen(navController, homeViewModel, categories, myCartViewModel)
                         }
                         composable(route = "sideMenu") {
                             whichScreen = 4
@@ -145,7 +151,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "liked") {
                             whichScreen = 7
-                            LikedScreen(likedViewModel, navController)
+                            LikedScreen(likedViewModel, navController, myCartViewModel)
                         }
                         composable(
                             route = "Category/{category}",
@@ -160,7 +166,7 @@ class MainActivity : ComponentActivity() {
                             CategoryScreen(
                                 category = backStackEntry.arguments?.getString("category").toString(),
                                 categoryViewModel = categoryViewModel,
-                                navController
+                                navController, myCartViewModel
                             )
                         }
                         composable(route = "signIn") {
@@ -198,10 +204,13 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "popular") {
                             whichScreen = 16
-                            PopularScreen(popularViewModel, navController)
+                            PopularScreen(popularViewModel, navController, myCartViewModel)
                         }
                         composable(route = "details") {
                             DetailsScreen(navController, detailsViewModel)
+                        }
+                        composable(route = "cart") {
+                            MyCart(myCartViewModel)
                         }
                     }
                 }
@@ -226,7 +235,9 @@ fun BottomBar(whichScreen: Int, navController: NavController) {
             painter = painterResource(R.drawable.shopicon),
             null,
             tint = Color.Unspecified,
-            modifier = Modifier.padding(bottom = 20.dp)
+            modifier = Modifier.padding(bottom = 20.dp).clickable {
+                navController.navigate("cart")
+            }
         )
         Box {
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {

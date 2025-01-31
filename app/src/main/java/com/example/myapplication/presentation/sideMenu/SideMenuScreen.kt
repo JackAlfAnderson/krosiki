@@ -87,7 +87,7 @@ fun SideMenuScreen(navController: NavController, sideMenuViewModel: SideMenuView
                     icon = R.drawable.bagicon
                 ),
                 onClick = {
-
+                    navController.navigate("cart")
                 }
             )
             SideMenuItemScreen(
@@ -105,7 +105,7 @@ fun SideMenuScreen(navController: NavController, sideMenuViewModel: SideMenuView
                     icon = R.drawable.kamazicon
                 ),
                 onClick = {
-
+                    navController.navigate("orders")
                 }
             )
             SideMenuItemScreen(

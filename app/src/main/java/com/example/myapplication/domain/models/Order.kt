@@ -12,6 +12,6 @@ data class Order (
     val email:String?,
     val payment_method:String?,
     val payed:Boolean?,
-    val total_amount: Int?,
+    val total_amount: Double?,
     val created_at:String?
 )

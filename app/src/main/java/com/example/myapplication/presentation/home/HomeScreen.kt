@@ -29,6 +29,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +69,10 @@ fun HomeScreen(
 
     homeViewModel.getList()
     val email = EmailManager(LocalContext.current).get()
-    myCartViewModel.userId(email)
+    LaunchedEffect(Unit) {
+        myCartViewModel.userId(email)
+    }
+
 
     val sneakers by homeViewModel.listOfProducts.collectAsState()
     val isShow by homeViewModel.isShow.collectAsState()

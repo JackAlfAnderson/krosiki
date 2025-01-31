@@ -22,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,9 +48,16 @@ import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 fun MyCart(myCartViewModel: MyCartViewModel) {
 
     val email = EmailManager(LocalContext.current).get()
-    myCartViewModel.userId(email)
+
     val userId by myCartViewModel.userId.collectAsState()
-    myCartViewModel.getCartItemsList(userId)
+
+    LaunchedEffect(Unit) {
+        myCartViewModel.getCartItemsList(userId)
+        myCartViewModel.userId(email)
+    }
+
+
+
 
     val listOfCartItems by myCartViewModel.listOfCartItems.collectAsState()
 
@@ -104,7 +112,7 @@ fun SneakerCartItem(product: Product) {
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
-        modifier = Modifier.height(height = 105.dp),
+        modifier = Modifier.height(height = 105.dp).padding(vertical = 7.dp),
         shape = RoundedCornerShape(8.dp)
     ) {
         Row(

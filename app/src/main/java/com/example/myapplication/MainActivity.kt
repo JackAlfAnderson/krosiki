@@ -50,6 +50,8 @@ import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 import com.example.myapplication.presentation.newPassword.vm.NewPasswordViewModel
 import com.example.myapplication.presentation.notificationScreen.NotificationScreen
 import com.example.myapplication.presentation.notificationScreen.vm.NotificationViewModel
+import com.example.myapplication.presentation.orders.OrdersScreen
+import com.example.myapplication.presentation.orders.VM.OrdersScreenViewModel
 import com.example.myapplication.presentation.otpVerification.OtpVerificationScreen
 import com.example.myapplication.presentation.otpVerification.vm.OtpVerificationViewModel
 import com.example.myapplication.presentation.pagerScreen.PagerScreen
@@ -85,6 +87,7 @@ class MainActivity : ComponentActivity() {
     val notificationViewModel = NotificationViewModel(basePostgrestManager)
     val detailsViewModel = DetailsScreenViewModel(basePostgrestManager)
     val myCartViewModel = MyCartViewModel(basePostgrestManager)
+    val orderScreenViewModel = OrdersScreenViewModel(basePostgrestManager)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,7 +124,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(
                         modifier = Modifier.padding(it),
                         navController = navController,
-                        startDestination = "cart"
+                        startDestination = "signIn"
                     ) {
                         composable(route = "splash") {
                             whichScreen = 1
@@ -207,10 +210,16 @@ class MainActivity : ComponentActivity() {
                             PopularScreen(popularViewModel, navController, myCartViewModel)
                         }
                         composable(route = "details") {
+                            whichScreen = 17
                             DetailsScreen(navController, detailsViewModel)
                         }
                         composable(route = "cart") {
+                            whichScreen = 18
                             MyCart(myCartViewModel)
+                        }
+                        composable(route = "orders") {
+                            whichScreen = 19
+                            OrdersScreen(orderScreenViewModel)
                         }
                     }
                 }

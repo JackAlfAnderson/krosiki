@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
+import com.example.myapplication.data.app.App
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.home.SneakersScreen
 import com.example.myapplication.presentation.likedScreen.vm.LikedViewModel
@@ -46,8 +47,6 @@ import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 fun LikedScreen(likedViewModel: LikedViewModel, navController: NavController, myCartViewModel: MyCartViewModel) {
 
     val email = EmailManager(LocalContext.current).get()
-    myCartViewModel.userId(email)
-    val userId by myCartViewModel.userId.collectAsState()
 
     likedViewModel.getList()
 
@@ -129,7 +128,7 @@ fun LikedScreen(likedViewModel: LikedViewModel, navController: NavController, my
                 columns = GridCells.Fixed(2)
             ) {
                 items(shoes){ item ->
-                    SneakersScreen(item, navController, myCartViewModel, userId)
+                    SneakersScreen(item, navController, myCartViewModel, App.userId)
                 }
             }
         }

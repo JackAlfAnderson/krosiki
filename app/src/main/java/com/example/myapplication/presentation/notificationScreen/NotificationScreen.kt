@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
+import com.example.myapplication.data.app.App
 import com.example.myapplication.domain.models.Notification
 import com.example.myapplication.presentation.notificationScreen.vm.NotificationViewModel
 
@@ -45,11 +46,9 @@ fun NotificationScreen(notificationViewModel: NotificationViewModel, navControll
     val email = EmailManager(LocalContext.current).get()
 
     val notificationItems by notificationViewModel.listOfNotification.collectAsState()
-    val user by notificationViewModel.userId.collectAsState()
 
-    notificationViewModel.userId(email)
-    if (user != "") {
-        notificationViewModel.getList(user)
+    if (App.userId != "") {
+        notificationViewModel.getList(App.userId)
     }
     val isShow by notificationViewModel.isShow.collectAsState()
 

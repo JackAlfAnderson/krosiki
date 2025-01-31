@@ -49,6 +49,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
+import com.example.myapplication.data.app.App
 import com.example.myapplication.data.connection.connectionCheck
 import com.example.myapplication.presentation.signIn.CustomTextField
 import com.example.myapplication.presentation.signUp.vM.SignUpViewModel
@@ -64,6 +65,10 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
     var isChecked by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+
+//    signUpViewModel.getUserId(email)
+//    val userId by signUpViewModel.userId.collectAsState()
+//    App.userId = userId
 
     val isShow by signUpViewModel.isShow.collectAsState()
 

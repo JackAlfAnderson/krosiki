@@ -14,7 +14,7 @@ class App(): Application() {
             private set
         var listProducts: MutableList<Product> = mutableListOf()
         var listOfSearch: MutableList<String> = mutableListOf()
-        var userId = "1c209d33-174e-434c-a4ca-4e46ef8fe855"
+        var userId: String = ""
     }
 
     override fun onCreate() {

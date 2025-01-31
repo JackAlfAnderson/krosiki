@@ -58,6 +58,15 @@ class BasePostgrestManager(
         return listOfNotification
     }
 
+    suspend fun getProfile(email: String): Profile {
+        val userProfile = supabaseClient.postgrest["profiles"].select {
+            filter {
+                eq("email", email)
+            }
+        }.decodeSingle<Profile>()
+        return userProfile
+    }
+
     suspend fun getUserId(email: String): String {
         val profile = supabaseClient.postgrest["profiles"].select {
             filter {

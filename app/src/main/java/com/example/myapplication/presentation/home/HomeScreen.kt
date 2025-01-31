@@ -69,15 +69,11 @@ fun HomeScreen(
 
     homeViewModel.getList()
     val email = EmailManager(LocalContext.current).get()
-    LaunchedEffect(Unit) {
-        myCartViewModel.userId(email)
-    }
 
 
     val sneakers by homeViewModel.listOfProducts.collectAsState()
     val isShow by homeViewModel.isShow.collectAsState()
     var listOfSearch by remember { mutableStateOf(listOf<String>()) }
-    val userId by myCartViewModel.userId.collectAsState()
 
     App.listProducts = sneakers.toMutableList()
 
@@ -261,7 +257,7 @@ fun HomeScreen(
 
                     LazyRow() {
                         items(sneakers) { sneaker ->
-                            SneakersScreen(sneaker, navController, myCartViewModel, userId = userId)
+                            SneakersScreen(sneaker, navController, myCartViewModel, userId = App.userId)
                         }
                     }
 

@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 class SignUpViewModel(val baseAuthManager: BaseAuthManager): ViewModel() {
 
     val isShow = MutableStateFlow(false)
+    val userId = MutableStateFlow("")
 
     fun signUp(name: String, email:String, password:String) = viewModelScope.launch {
         try {
@@ -24,6 +25,12 @@ class SignUpViewModel(val baseAuthManager: BaseAuthManager): ViewModel() {
             }
         } catch (e: Exception) {
             Log.d("SignUpError", e.message.toString())
+        }
+    }
+
+    fun getUserId(email: String) = viewModelScope.launch{
+        userId.update {
+            baseAuthManager.getProfile(email).id.toString()
         }
     }
 }

@@ -57,10 +57,6 @@ fun CategoryScreen(
     myCartViewModel: MyCartViewModel
 ) {
 
-    val email = EmailManager(LocalContext.current).get()
-    myCartViewModel.userId(email)
-    val userId by myCartViewModel.userId.collectAsState()
-
     categoryViewModel.getList()
 
     val isShow by categoryViewModel.isShow.collectAsState()
@@ -272,7 +268,7 @@ fun CategoryScreen(
                    columns = GridCells.Fixed(2)
                ) {
                    items(shoes){ item ->
-                       SneakersScreen(item, navController, myCartViewModel, userId)
+                       SneakersScreen(item, navController, myCartViewModel, App.userId)
                    }
                }
 

@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
+import com.example.myapplication.data.app.App
 import com.example.myapplication.domain.models.Cart
 import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
@@ -49,14 +50,11 @@ fun MyCart(myCartViewModel: MyCartViewModel) {
 
     val email = EmailManager(LocalContext.current).get()
 
-    val userId by myCartViewModel.userId.collectAsState()
 
     LaunchedEffect(Unit) {
-        myCartViewModel.getCartItemsList(userId)
-        myCartViewModel.userId(email)
+        myCartViewModel.getCartItemsList(App.userId)
+
     }
-
-
 
 
     val listOfCartItems by myCartViewModel.listOfCartItems.collectAsState()

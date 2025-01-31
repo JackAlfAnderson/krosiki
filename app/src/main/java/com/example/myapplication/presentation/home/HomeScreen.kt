@@ -147,6 +147,7 @@ fun HomeScreen(
                             modifier = Modifier.background(Color(0xFFF7F7F9))
                         ) {
                             SearchBar(
+
                                 colors = SearchBarDefaults.colors(
                                     containerColor = Color.White,
                                     dividerColor = Color.Transparent

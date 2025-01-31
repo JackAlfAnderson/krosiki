@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -92,6 +94,7 @@ fun HomeScreen(
                         .fillMaxSize()
                         .padding(20.dp)
                         .background(Color(0xFFF7F7F9))
+                        .verticalScroll(rememberScrollState())
                 ) {
                     Box(
                         modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
@@ -138,6 +141,7 @@ fun HomeScreen(
                         }
                     }
                     Spacer(Modifier.height(26.dp))
+
                     Box() {
                         Column(
                             modifier = Modifier.background(Color(0xFFF7F7F9))
@@ -147,6 +151,7 @@ fun HomeScreen(
                                     containerColor = Color.White,
                                     dividerColor = Color.Transparent
                                 ),
+                                modifier = Modifier.size(width = 269.dp, height = 52.dp),
                                 query = search,
                                 onQueryChange = {
                                     search = it
@@ -203,22 +208,19 @@ fun HomeScreen(
                                 }
                             }
                         }
+                    }
+                    Box(
+                        contentAlignment = Alignment.CenterEnd,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.settingsicon),
+                            null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.clickable {
 
-                        Box(
-                            contentAlignment = Alignment.CenterEnd,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(
-                                painterResource(R.drawable.settingsicon),
-                                null,
-                                tint = Color.Unspecified,
-                                modifier = Modifier.clickable {
-
-                                }
-                            )
-                        }
-
-
+                            }
+                        )
                     }
                     Spacer(Modifier.height(22.dp))
                     Text(
@@ -306,6 +308,97 @@ fun HomeScreen(
 
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun dfsdfs() {
+
+    var search = ""
+    Row {
+        Box() {
+            Column(
+                modifier = Modifier.background(Color(0xFFF7F7F9))
+            ) {
+                SearchBar(
+                    colors = SearchBarDefaults.colors(
+                        containerColor = Color.White,
+                        dividerColor = Color.Transparent
+                    ),
+                    modifier = Modifier.size(width = 269.dp, height = 52.dp),
+                    query = search,
+                    onQueryChange = {
+                        search = it
+                    },
+                    onSearch = {
+
+                    },
+                    active = false,
+                    onActiveChange = {
+
+                    },
+                    placeholder = {
+                        Row {
+                            Icon(
+                                painter = painterResource(R.drawable.icon),
+                                null,
+                                tint = Color.Unspecified
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text("Поиск", fontSize = 12.sp)
+
+                        }
+                        Box(
+                            contentAlignment = Alignment.CenterEnd,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row() {
+                                Icon(
+                                    painter = painterResource(R.drawable.rectangle_846),
+                                    null,
+                                    modifier = Modifier
+                                        .height(24.dp)
+                                        .width(2.dp)
+                                )
+                                Spacer(Modifier.width(12.dp))
+                                Icon(
+                                    painter = painterResource(R.drawable.vector),
+                                    null
+                                )
+                            }
+                        }
+                    },
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+//                LazyColumn(
+//                    Modifier.padding(20.dp)
+//                ) {
+//                    items(
+//                        listOfSearch
+//                    ) { item ->
+//                        RecentSearchItem(item)
+//                        Spacer(Modifier.height(16.dp))
+//                    }
+//                }
+                }
+            }
+        }
+        Box(
+            contentAlignment = Alignment.CenterEnd,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                painterResource(R.drawable.settingsicon),
+                null,
+                tint = Color.Unspecified,
+                modifier = Modifier.clickable {
+
+                }
+            )
+        }
+    }
+    
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -397,101 +490,103 @@ fun SneakersScreen(
     userId: String
 ) {
 
-
     var isLiked by remember { mutableStateOf(false) }
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        modifier = Modifier
-            .size(width = 160.dp, height = 182.dp)
-            .padding(horizontal = 10.dp),
-        shape = RoundedCornerShape(16.dp),
+    Column(
+        modifier = Modifier.padding(end = 15.dp, bottom = 15.dp)
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            modifier = Modifier
+                .size(width = 160.dp, height = 182.dp)
+                .clickable {
+                    navController.navigate("details")
+                },
+            shape = RoundedCornerShape(16.dp),
 
-        ) {
-        Box() {
-            Card(
-                shape = RoundedCornerShape(200.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFF7F7F9)
-                ),
-                modifier = Modifier
-                    .padding(start = 9.dp, top = 9.dp)
             ) {
-                Icon(
-                    painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(
-                        R.drawable.heart
+            Box() {
+                Card(
+                    shape = RoundedCornerShape(200.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFF7F7F9)
                     ),
-                    null,
                     modifier = Modifier
-                        .padding(8.dp)
-                        .size(16.dp)
-                        .clickable {
-                            isLiked = !isLiked
-                        },
-                    tint = Color.Unspecified
-                )
-            }
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 18.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                AsyncImage(
-                    model = product.image,
-                    null,
-                    modifier = Modifier
-                        .width(118.dp)
-                        .height(70.dp)
-                )
-            }
-            Column(
-                modifier = Modifier.padding(top = 100.dp, start = 9.dp)
-            ) {
-                Text(
-                    if (product.best_seller == true) "BEST SELLER" else "",
-                    color = Color(0xFF48B2E7),
-                    fontSize = 12.sp
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    if (product.name.toString().length > 16) product.name.toString()
-                        .take(13) + "..." else product.name.toString(),
-                    color = Color(0xFF6A6A6A),
-                    fontSize = 16.sp
-                )
-                Spacer(Modifier.height(14.dp))
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(start = 9.dp, top = 9.dp)
+                ) {
+                    Icon(
+                        painter = if (isLiked) painterResource(R.drawable.fillheart) else painterResource(
+                            R.drawable.heart
+                        ),
+                        null,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(16.dp)
+                            .clickable {
+                                isLiked = !isLiked
+                            },
+                        tint = Color.Unspecified
+                    )
+                }
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 18.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = product.image,
+                        null,
+                        modifier = Modifier
+                            .width(118.dp)
+                            .height(70.dp)
+                    )
+                }
+                Column(
+                    modifier = Modifier.padding(top = 100.dp, start = 9.dp)
                 ) {
                     Text(
-                        "₽" + product.price.toString(),
-                        fontSize = 14.sp,
-                        fontFamily = newPeninium
+                        if (product.best_seller == true) "BEST SELLER" else "",
+                        color = Color(0xFF48B2E7),
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        if (product.name.toString().length > 16) product.name.toString()
+                            .take(13) + "..." else product.name.toString(),
+                        color = Color(0xFF6A6A6A),
+                        fontSize = 16.sp
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "₽" + product.price.toString(),
+                            fontSize = 14.sp,
+                            fontFamily = newPeninium
+                        )
+                    }
+                }
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+                    Icon(
+                        painter = painterResource(R.drawable.plusicon),
+                        null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.clickable {
+                            Log.d("clicked", "кликнулось")
+                            myCartViewModel.addCartItem(
+                                userId = userId,
+                                productId = product.id!!,
+                                quantity = 1
+                            )
+                        }
                     )
                 }
             }
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-                Icon(
-                    painter = painterResource(R.drawable.plusicon),
-                    null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.clickable {
-                        Log.d("clicked", "кликнулось")
-                        myCartViewModel.addCartItem(
-                            userId = userId,
-                            productId = product.id!!,
-                            quantity = 1
-                        )
-                    }
-                )
-            }
         }
     }
-
-
 }
 
 

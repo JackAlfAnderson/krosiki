@@ -215,11 +215,11 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "cart") {
                             whichScreen = 18
-                            MyCart(myCartViewModel)
+                            MyCart(myCartViewModel, navController)
                         }
                         composable(route = "orders") {
                             whichScreen = 19
-                            OrdersScreen(orderScreenViewModel)
+                            OrdersScreen(orderScreenViewModel, navController)
                         }
                     }
                 }

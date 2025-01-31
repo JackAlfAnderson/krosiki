@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
@@ -42,7 +43,7 @@ import com.example.myapplication.domain.models.OrderItem
 import com.example.myapplication.presentation.orders.VM.OrdersScreenViewModel
 
 @Composable
-fun OrdersScreen(ordersScreenVIewModel: OrdersScreenViewModel) {
+fun OrdersScreen(ordersScreenVIewModel: OrdersScreenViewModel, navController: NavController) {
 
     val email = EmailManager(LocalContext.current).get()
 
@@ -78,7 +79,7 @@ fun OrdersScreen(ordersScreenVIewModel: OrdersScreenViewModel) {
                         null,
                         tint = Color.Unspecified,
                         modifier = Modifier.clickable {
-
+                            navController.navigate("home")
                         }
                     )
                 }

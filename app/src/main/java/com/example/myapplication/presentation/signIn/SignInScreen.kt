@@ -1,6 +1,5 @@
 package com.example.myapplication.presentation.signIn
 
-import android.content.Intent
 import android.util.Patterns
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,10 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.core.content.FileProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.ValidatorManager
 import com.example.myapplication.data.EmailManager
@@ -54,9 +50,7 @@ import com.example.myapplication.presentation.utils.InternetConnectionDialog
 import com.example.myapplication.ui.theme.ButtonSuperColor
 import com.example.myapplication.ui.theme.LightGrayCustomSuperMega
 import com.example.myapplication.ui.theme.myFontFamily
-import com.example.myapplication.ui.theme.newPeninium
-import java.io.File
-import java.io.FileOutputStream
+
 
 @Composable
 fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel) {
@@ -64,11 +58,10 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    var validatorManager = ValidatorManager()
+    val userId by signInViewModel.userId.collectAsState()
+    App.userId = userId
 
-//    signInViewModel.getUserId(email)
-//    val userId by signInViewModel.userId.collectAsState()
-//    App.userId = userId
+    var validatorManager = ValidatorManager()
 
     val isShow by signInViewModel.isShow.collectAsState()
 
@@ -76,8 +69,8 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
 
     val context = LocalContext.current
     InternetConnectionDialog(context)
-    
-    if (isDialogShow){
+
+    if (isDialogShow) {
         Dialog(
             onDismissRequest = {
                 isDialogShow = false
@@ -156,8 +149,8 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
             horizontalArrangement = Arrangement.End
         ) {
             Text("Восстановить", Modifier.clickable {
-                    navController.navigate("forgot")
-                }
+                navController.navigate("forgot")
+            }
             )
         }
         Spacer(Modifier.height(24.dp))
@@ -166,39 +159,19 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
                 .fillMaxWidth()
                 .height(50.dp),
             enabled = Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
-                password.length > 6,
+                    password.length > 6,
             onClick = {
-//                if (validatorManager.login(email, password)){
-//
-//                } else {
-//                    isDialogShow = true
-//                }
-//
-//                signInViewModel.signIn(email = email, password = password)
-//                EmailManager(context).set(email)
-//                navController.navigate("home")
-                val pdfile = File(context.filesDir, "kotlinspec.pdf")
+                if (validatorManager.login(email, password)) {
 
-                context.resources.openRawResource(R.raw.kotlinspec).use { inputStream ->
-                    FileOutputStream(pdfile).use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
+                } else {
+                    isDialogShow = true
                 }
 
-                val pdfUri = FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.provider",
-                    pdfile
-                )
-
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    setDataAndType(pdfUri, "application/pdf")
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
-
-                context.startActivity(intent)
-
-                      },
+                signInViewModel.signIn(email = email, password = password)
+                EmailManager(context).set(email)
+                signInViewModel.getUserId(email)
+                navController.navigate("home")
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = ButtonSuperColor
             ),
@@ -232,7 +205,6 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
 }
 
 
-
 @Composable
 fun CustomTextField(
     titleText: String,
@@ -260,7 +232,7 @@ fun CustomTextField(
         },
         label = {
             Text(
-                if(text.isEmpty()) label else "", color = Color(0xFF6A6A6A)
+                if (text.isEmpty()) label else "", color = Color(0xFF6A6A6A)
             )
         },
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),

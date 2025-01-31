@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
@@ -46,7 +47,7 @@ import com.example.myapplication.domain.models.Product
 import com.example.myapplication.presentation.myCart.Vm.MyCartViewModel
 
 @Composable
-fun MyCart(myCartViewModel: MyCartViewModel) {
+fun MyCart(myCartViewModel: MyCartViewModel, navController: NavController) {
 
     val email = EmailManager(LocalContext.current).get()
 
@@ -77,7 +78,7 @@ fun MyCart(myCartViewModel: MyCartViewModel) {
                         null,
                         tint = Color.Unspecified,
                         modifier = Modifier.clickable {
-
+                            navController.navigate("home")
                         }
                     )
                 }
@@ -91,7 +92,7 @@ fun MyCart(myCartViewModel: MyCartViewModel) {
 
             }
             Spacer(Modifier.height(16.dp))
-            Text("3 товара", fontSize = 16.sp)
+            Text("${listOfCartItems.size} товара", fontSize = 16.sp)
             LazyColumn {
                 items(listOfCartItems){ item ->
                     SneakerCartItem(item)
@@ -106,55 +107,58 @@ fun MyCart(myCartViewModel: MyCartViewModel) {
 
 @Composable
 fun SneakerCartItem(product: Product) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        modifier = Modifier.height(height = 105.dp).padding(vertical = 7.dp),
-        shape = RoundedCornerShape(8.dp)
+    Column(
+        Modifier.padding(vertical = 7.dp)
     ) {
-        Row(
-            Modifier
-                .fillMaxSize()
-                .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            modifier = Modifier.height(height = 105.dp),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xffF7F7F9)
-                ),
-                modifier = Modifier.size(width = 87.dp, height = 85.dp),
-                shape = RoundedCornerShape(16.dp)
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xffF7F7F9)
+                    ),
+                    modifier = Modifier.size(width = 87.dp, height = 85.dp),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    //Заменить на асинх
-                    AsyncImage(
-                        model = product.image,
-                        null,
-                        modifier = Modifier.size(width = 86.dp, height = 55.dp)
-                    )
+                    Column(
+                        Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        //Заменить на асинх
+                        AsyncImage(
+                            model = product.image,
+                            null,
+                            modifier = Modifier.size(width = 86.dp, height = 55.dp)
+                        )
+                    }
+
+
                 }
+                Spacer(Modifier.width(12.dp))
+                Column(
 
+                ) {
+                    Text(product.name.toString(), fontSize = 16.sp)
+                    Spacer(Modifier.height(6.dp))
+                    Row {
+                        Text("₽ ${product.price}")
+                    }
 
-            }
-            Spacer(Modifier.width(12.dp))
-            Column(
-
-            ) {
-                Text(product.name.toString(), fontSize = 16.sp)
-                Spacer(Modifier.height(6.dp))
-                Row {
-                    Text("₽ ${product.price}")
-                    Spacer(Modifier.width(31.dp))
-                    Text("1 ШТ")
                 }
-
             }
         }
     }
+
 }
 

@@ -45,5 +45,5 @@ val newPeninium = FontFamily(
 )
 
 val myFontFamily = FontFamily(
-    Font(R.font.newpeninium)
+    Font(R.font.pragmaticactt)
 )

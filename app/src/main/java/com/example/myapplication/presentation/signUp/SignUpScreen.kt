@@ -1,6 +1,10 @@
 package com.example.myapplication.presentation.signUp
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,6 +59,8 @@ import com.example.myapplication.presentation.signIn.CustomTextField
 import com.example.myapplication.presentation.signUp.vM.SignUpViewModel
 import com.example.myapplication.presentation.utils.InternetConnectionDialog
 import com.example.myapplication.ui.theme.ButtonSuperColor
+import java.io.File
+import java.io.FileOutputStream
 
 @Composable
 fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel) {
@@ -66,9 +72,7 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
 
     val context = LocalContext.current
 
-//    signUpViewModel.getUserId(email)
-//    val userId by signUpViewModel.userId.collectAsState()
-//    App.userId = userId
+    val userId by signUpViewModel.userId.collectAsState()
 
     val isShow by signUpViewModel.isShow.collectAsState()
 
@@ -155,7 +159,10 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
                 isChecked = it
             })
             Spacer(Modifier.width(12.dp))
-            Text("Даю согласие на обработку персональных данных")
+            Text("Даю согласие на обработку персональных данных", modifier = Modifier.clickable {
+                    openPdf(context)
+                }
+            )
 
         }
         Spacer(Modifier.height(24.dp))
@@ -171,7 +178,8 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
 
                 signUpViewModel.signUp(name = userName, email = email, password = password)
                 EmailManager(context).set(email)
-
+                signUpViewModel.getUserId(email)
+                App.userId = userId
 
                 navController.navigate("home")
             },
@@ -205,6 +213,38 @@ fun SignUpScreen(navController: NavController, signUpViewModel: SignUpViewModel)
             )
         }
     }
+}
+
+fun openPdf(context: Context) {
+    // Копируем PDF из assets в кэш
+    val pdfFile = copyPdfFromAssetsToCache(context, "kotlinspec.pdf")
+
+    // Создаем Intent для открытия PDF
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.setDataAndType(Uri.fromFile(pdfFile), "application/pdf")
+    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+
+    // Проверяем, есть ли приложение для открытия PDF
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+        // Если нет приложения для открытия PDF, показываем сообщение
+        Toast.makeText(context, "Нет приложения для просмотра PDF", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun copyPdfFromAssetsToCache(context: Context, pdfName: String): File {
+    // Создаем файл в кэше
+    val file = File(context.cacheDir, pdfName)
+    if (!file.exists()) {
+        // Копируем файл из assets в кэш
+        context.assets.open(pdfName).use { inputStream ->
+            FileOutputStream(file).use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+    }
+    return file
 }
 
 @Composable

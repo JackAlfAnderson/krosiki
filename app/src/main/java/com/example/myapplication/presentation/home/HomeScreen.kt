@@ -30,6 +30,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -66,16 +68,22 @@ fun HomeScreen(
     categories: List<CategoryItem>,
     myCartViewModel: MyCartViewModel
 ) {
+    val email = EmailManager(LocalContext.current).get()
+
+    LaunchedEffect(Unit) {
+        homeViewModel.getList()
+        homeViewModel.getUserId(email)
+    }
+
+
+    val userId by homeViewModel.userId.collectAsState()
+    App.userId = userId
+
 
     var search by remember { mutableStateOf("") }
 
-    homeViewModel.getList()
-    val email = EmailManager(LocalContext.current).get()
-
-
     val sneakers by homeViewModel.listOfProducts.collectAsState()
     val isShow by homeViewModel.isShow.collectAsState()
-    var listOfSearch by remember { mutableStateOf(listOf<String>()) }
 
     App.listProducts = sneakers.toMutableList()
 
@@ -141,88 +149,54 @@ fun HomeScreen(
                         }
                     }
                     Spacer(Modifier.height(26.dp))
+                    Row {
+                        Box (
 
-                    Box() {
-                        Column(
-                            modifier = Modifier.background(Color(0xFFF7F7F9))
-                        ) {
-                            SearchBar(
-
-                                colors = SearchBarDefaults.colors(
-                                    containerColor = Color.White,
-                                    dividerColor = Color.Transparent
-                                ),
-                                modifier = Modifier.size(width = 269.dp, height = 52.dp),
-                                query = search,
-                                onQueryChange = {
+                        ){
+                            TextField(
+                                value = search,
+                                onValueChange = {
                                     search = it
                                 },
-                                onSearch = {
-
-                                },
-                                active = false,
-                                onActiveChange = {
-
-                                },
-                                placeholder = {
-                                    Row {
-                                        Icon(
-                                            painter = painterResource(R.drawable.icon),
-                                            null,
-                                            tint = Color.Unspecified
-                                        )
-                                        Spacer(modifier = Modifier.width(12.dp))
-                                        Text("Поиск", fontSize = 12.sp)
-
-                                    }
-                                    Box(
-                                        contentAlignment = Alignment.CenterEnd,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Row() {
+                                colors = TextFieldDefaults.colors(
+                                    unfocusedContainerColor = Color.White,
+                                    focusedContainerColor = Color.White,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                ),
+                                label = {
+                                    if (search.isEmpty()){
+                                        Row {
                                             Icon(
-                                                painter = painterResource(R.drawable.rectangle_846),
+                                                painter = painterResource(R.drawable.icon),
                                                 null,
-                                                modifier = Modifier
-                                                    .height(24.dp)
-                                                    .width(2.dp)
+                                                tint = Color.Unspecified
                                             )
-                                            Spacer(Modifier.width(12.dp))
-                                            Icon(
-                                                painter = painterResource(R.drawable.vector),
-                                                null
-                                            )
+                                            Spacer(modifier = Modifier.width(12.dp))
+                                            Text("Поиск", fontSize = 12.sp)
                                         }
+
                                     }
                                 },
-                                shape = RoundedCornerShape(14.dp)
-                            ) {
-                                LazyColumn(
-                                    Modifier.padding(20.dp)
-                                ) {
-                                    items(
-                                        listOfSearch
-                                    ) { item ->
-                                        RecentSearchItem(item)
-                                        Spacer(Modifier.height(16.dp))
-                                    }
+                                shape = RoundedCornerShape(14.dp),
+                                modifier = Modifier.size(width = 269.dp, height = 52.dp)
+                            )
+                        }
+                        Box(
+                            contentAlignment = Alignment.CenterEnd,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.settingsicon),
+                                null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier.clickable {
+
                                 }
-                            }
+                            )
                         }
                     }
-                    Box(
-                        contentAlignment = Alignment.CenterEnd,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(
-                            painterResource(R.drawable.settingsicon),
-                            null,
-                            tint = Color.Unspecified,
-                            modifier = Modifier.clickable {
 
-                            }
-                        )
-                    }
                     Spacer(Modifier.height(22.dp))
                     Text(
                         text = "Категории", fontSize = 16.sp
@@ -318,28 +292,22 @@ private fun dfsdfs() {
 
     var search = ""
     Row {
-        Box() {
-            Column(
-                modifier = Modifier.background(Color(0xFFF7F7F9))
-            ) {
-                SearchBar(
-                    colors = SearchBarDefaults.colors(
-                        containerColor = Color.White,
-                        dividerColor = Color.Transparent
-                    ),
-                    modifier = Modifier.size(width = 269.dp, height = 52.dp),
-                    query = search,
-                    onQueryChange = {
-                        search = it
-                    },
-                    onSearch = {
+        Box (
 
-                    },
-                    active = false,
-                    onActiveChange = {
-
-                    },
-                    placeholder = {
+        ){
+            TextField(
+                value = search,
+                onValueChange = {
+                    search = it
+                },
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                label = {
+                    if (search.isEmpty()){
                         Row {
                             Icon(
                                 painter = painterResource(R.drawable.icon),
@@ -348,42 +316,13 @@ private fun dfsdfs() {
                             )
                             Spacer(modifier = Modifier.width(12.dp))
                             Text("Поиск", fontSize = 12.sp)
+                        }
 
-                        }
-                        Box(
-                            contentAlignment = Alignment.CenterEnd,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row() {
-                                Icon(
-                                    painter = painterResource(R.drawable.rectangle_846),
-                                    null,
-                                    modifier = Modifier
-                                        .height(24.dp)
-                                        .width(2.dp)
-                                )
-                                Spacer(Modifier.width(12.dp))
-                                Icon(
-                                    painter = painterResource(R.drawable.vector),
-                                    null
-                                )
-                            }
-                        }
-                    },
-                    shape = RoundedCornerShape(14.dp)
-                ) {
-//                LazyColumn(
-//                    Modifier.padding(20.dp)
-//                ) {
-//                    items(
-//                        listOfSearch
-//                    ) { item ->
-//                        RecentSearchItem(item)
-//                        Spacer(Modifier.height(16.dp))
-//                    }
-//                }
-                }
-            }
+                    }
+                },
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.size(width = 269.dp, height = 52.dp)
+            )
         }
         Box(
             contentAlignment = Alignment.CenterEnd,

@@ -32,8 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
+import com.example.myapplication.data.app.App
 import com.example.myapplication.data.supabase.BaseAuthManager
 import com.example.myapplication.presentation.sideMenu.vm.SideMenuViewModel
 
@@ -43,8 +45,10 @@ fun SideMenuScreen(navController: NavController, sideMenuViewModel: SideMenuView
     val email = EmailManager(LocalContext.current).get()
     LaunchedEffect(Unit) {
         sideMenuViewModel.getProfile(email)
+        sideMenuViewModel.getImageUrl(App.userId)
     }
 
+    val userImage by sideMenuViewModel.userImage.collectAsState()
 
     val profile by sideMenuViewModel.profile.collectAsState()
     val isShow by sideMenuViewModel.isShow.collectAsState()
@@ -61,10 +65,8 @@ fun SideMenuScreen(navController: NavController, sideMenuViewModel: SideMenuView
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(
-                    R.drawable.emanuel
-                ),
+            AsyncImage(
+                model = userImage,
                 null,
                 modifier = Modifier.size(96.dp)
             )

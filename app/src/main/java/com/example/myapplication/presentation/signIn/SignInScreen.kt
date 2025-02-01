@@ -58,9 +58,6 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val userId by signInViewModel.userId.collectAsState()
-    App.userId = userId
-
     var validatorManager = ValidatorManager()
 
     val isShow by signInViewModel.isShow.collectAsState()
@@ -169,7 +166,6 @@ fun SignInScreen(navController: NavController, signInViewModel: SignInViewModel)
 
                 signInViewModel.signIn(email = email, password = password)
                 EmailManager(context).set(email)
-                signInViewModel.getUserId(email)
                 navController.navigate("home")
             },
             colors = ButtonDefaults.buttonColors(

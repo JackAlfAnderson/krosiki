@@ -31,6 +31,7 @@ class SignInViewModel(val baseAuthManager: BaseAuthManager) : ViewModel() {
         userId.update {
             baseAuthManager.getProfile(email).id.toString()
         }
+        Log.d("userId", userId.toString())
     }
 
 }

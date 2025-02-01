@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import com.example.myapplication.R
 import com.example.myapplication.data.EmailManager
 import com.example.myapplication.data.app.App
@@ -54,8 +55,11 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
 
     LaunchedEffect(Unit) {
         profileViewModel.getProfile(email)
+        profileViewModel.getImageUrl(App.userId)
     }
     val profile by profileViewModel.profile.collectAsState()
+
+    val userImage by profileViewModel.userImage.collectAsState()
 
     Log.d("chkeckasdlkf", profile.toString())
     //Remember values
@@ -128,8 +132,8 @@ fun ProfileScreen(profileViewModel: ProfileViewModel, navController: NavControll
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(R.drawable.emanuel),
+            AsyncImage(
+                model = userImage,
                 null,
                 modifier = Modifier.size(96.dp)
             )

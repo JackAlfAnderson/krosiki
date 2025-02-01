@@ -1,12 +1,19 @@
 package com.example.myapplication.data.app
 
 import android.app.Application
+import android.net.Uri
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.myapplication.data.supabase.BaseAuthManager
 import com.example.myapplication.data.supabase.BasePostgrestManager
 import com.example.myapplication.domain.models.Product
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
 
 class App(): Application() {
     companion object {
@@ -15,6 +22,7 @@ class App(): Application() {
         var listProducts: MutableList<Product> = mutableListOf()
         var listOfSearch: MutableList<String> = mutableListOf()
         var userId: String = ""
+        var selectedImageUri: Uri? = null
     }
 
     override fun onCreate() {
@@ -31,6 +39,7 @@ class App(): Application() {
         ){
             install(Postgrest)
             install(Auth)
+            install(Storage)
         }
     }
 

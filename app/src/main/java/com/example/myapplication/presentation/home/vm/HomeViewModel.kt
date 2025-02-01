@@ -13,6 +13,7 @@ class HomeViewModel(val basePostgrestManager: BasePostgrestManager): ViewModel()
 
     val isShow = MutableStateFlow(false)
     val listOfProducts = MutableStateFlow<List<Product>>(listOf())
+    val userId = MutableStateFlow("")
 
     fun getList() = viewModelScope.launch {
         try {
@@ -32,5 +33,11 @@ class HomeViewModel(val basePostgrestManager: BasePostgrestManager): ViewModel()
         }
 
 
+    }
+    fun getUserId(email: String) = viewModelScope.launch{
+        userId.update {
+            basePostgrestManager.getProfile(email).id.toString()
+        }
+        Log.d("userId", userId.toString())
     }
 }

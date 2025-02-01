@@ -1,6 +1,8 @@
 package com.example.myapplication.data.supabase
 
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.example.myapplication.domain.models.Cart
 import com.example.myapplication.domain.models.Favorite
@@ -11,12 +13,34 @@ import com.example.myapplication.domain.models.Product
 import com.example.myapplication.domain.models.Profile
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import io.github.jan.supabase.storage.storage
+import java.io.File
+import java.io.InputStream
 
 class BasePostgrestManager(
     private val supabaseClient: SupabaseClient
 ) {
+
+    suspend fun uploadImage(userId: String, imageUri: Uri, context: Context) {
+        val file = File(imageUri.path) // Преобразуй URI в файл
+        val bucket = supabaseClient.storage["images"] // Выбери bucket
+        // Загрузи файл в Storage
+        val filePath = "user_$userId/${file.name}" // Путь к файлу, связанный с ID пользователя
+        val fileByteArray = uriToByteArray(context = context, imageUri)
+        bucket.upload(filePath, fileByteArray)
+    }
+
+    suspend fun getUserImageUrl(userId: String): String {
+        val bucket = supabaseClient.storage["images"]
+        val filePath = "user_$userId/profile.jpg" // Путь к файлу: папка пользователя + фиксированное имя файла
+        return bucket.publicUrl(filePath) // Получи публичную ссылку на картинку
+    }
+
+    fun uriToByteArray(context: Context, uri: Uri): ByteArray {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        return inputStream?.readBytes() ?: throw IllegalArgumentException("Не удалось открыть InputStream для Uri: $uri")
+    }
+
     suspend fun getProducts(): List<Product> {
 
         val listOfProducts = supabaseClient.postgrest["products"].select().decodeList<Product>()
